@@ -1,14 +1,36 @@
 {
   "rewrites": [
-    { "source": "^/@(.+)$", "destination": "/api/page?p=$1" }
+    {
+      "source": "/@:name/book/:id",
+      "destination": "/api/page?p=:name/book/:id"
+    },
+    {
+      "source": "/@:name",
+      "destination": "/api/page?p=:name"
+    }
   ],
   "headers": [
-    { "source": "/sw.js", "headers": [
-      { "key": "Cache-Control", "value": "no-cache" },
-      { "key": "Service-Worker-Allowed", "value": "/" }
-    ] },
-    { "source": "/manifest.webmanifest", "headers": [
-      { "key": "Content-Type", "value": "application/manifest+json" }
-    ] }
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
+      ]
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json"
+        }
+      ]
+    }
   ]
 }
