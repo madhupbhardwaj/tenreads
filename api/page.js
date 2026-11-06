@@ -1,6 +1,6 @@
 /* Link previews for profile links.
    WhatsApp, iMessage, X and others don't run the site's JavaScript, so a shared link like
-   tenpages.vercel.app/@asha would otherwise only ever show the generic Tenpages card.
+   tenreads.vercel.app/@asha would otherwise only ever show the generic Tenreads card.
    This function sends the normal page, but with the title, description and picture filled
    in for that person (and that book, for /@asha/book/OL82563W links).
    It only reads things that are already public, and if anything goes wrong it sends the
@@ -8,7 +8,7 @@
 
    Setup: in Vercel > Project > Settings > Environment Variables, add
    FIREBASE_PROJECT_ID with the same project ID you put in index.html. Without it, every
-   link just gets the generic Tenpages card. */
+   link just gets the generic Tenreads card. */
 
 const PROJECT = process.env.FIREBASE_PROJECT_ID || '';
 const FIRESTORE = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents/`;
@@ -54,7 +54,7 @@ async function previewFor(rest, origin, fetchImpl) {
   if (!m) return null;
   const name = m[1].toLowerCase(), bookId = m[2] && m[2].toUpperCase();
   const url = `${origin}/@${name}${bookId ? '/book/' + bookId : ''}`;
-  const generic = { title: `@${name} on Tenpages`, description: 'Score every book you read, out of 10.', url, image: `${origin}/og.png`, large: true };
+  const generic = { title: `@${name} on Tenreads`, description: 'Score every book you read, out of 10.', url, image: `${origin}/og.png`, large: true };
   if (!PROJECT) return generic;
 
   const u = await getDoc(fetchImpl, `usernames/${name}`);
@@ -70,7 +70,7 @@ async function previewFor(rest, origin, fetchImpl) {
     const description = st.books
       ? `${first} has scored ${plural(st.books, 'book')}, averaging ${one(st.avg || 0)}.${lvl ? ` Level ${lvl.n}, ${lvl.name}.` : ''}`
       : `See what ${first} is reading and how they score it.`;
-    return { ...generic, title: `${display} (@${prof.username || name}) on Tenpages`, description };
+    return { ...generic, title: `${display} (@${prof.username || name}) on Tenreads`, description };
   }
 
   const rec = await getDoc(fetchImpl, `users/${u.uid}/books/${bookId}`);
@@ -81,10 +81,10 @@ async function previewFor(rest, origin, fetchImpl) {
   }
   if (!title) return generic;
   const description = rec && rec.rating
-    ? `${first} gave ${title}${rec.author ? ` by ${rec.author}` : ''} ${rec.rating}/10 (${WORDS[rec.rating] || ''}). See their whole shelf on Tenpages.`
-    : `See how ${first} scores ${title} on Tenpages.`;
+    ? `${first} gave ${title}${rec.author ? ` by ${rec.author}` : ''} ${rec.rating}/10 (${WORDS[rec.rating] || ''}). See their whole shelf on Tenreads.`
+    : `See how ${first} scores ${title} on Tenreads.`;
   const image = coverOf(cover);
-  return { title: `${first}’s score for ${title} | Tenpages`, description, url, image: image || `${origin}/og.png`, large: !image };
+  return { title: `${first}’s score for ${title} | Tenreads`, description, url, image: image || `${origin}/og.png`, large: !image };
 }
 
 function metaBlock(p) {

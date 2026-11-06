@@ -1,9 +1,9 @@
-/* Tenpages service worker: makes the site installable, opens instantly, and keeps working on a bad connection.
+/* Tenreads service worker: makes the site installable, opens instantly, and keeps working on a bad connection.
    Bump VERSION whenever this file changes. index.html itself is always fetched fresh when online,
    so new versions of the site show up straight away. */
 const VERSION = 'v1';
-const SHELL = 'tenpages-shell-' + VERSION;
-const RUNTIME = 'tenpages-runtime-' + VERSION;
+const SHELL = 'tenreads-shell-' + VERSION;
+const RUNTIME = 'tenreads-runtime-' + VERSION;
 const SHELL_FILES = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png'];
 const MAX_RUNTIME = 150;
 
@@ -14,7 +14,7 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k.startsWith('tenpages-') && k !== SHELL && k !== RUNTIME).map(k => caches.delete(k))))
+      .then(keys => Promise.all(keys.filter(k => k.startsWith('tenreads-') && k !== SHELL && k !== RUNTIME).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });

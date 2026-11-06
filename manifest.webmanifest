@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "Tenpages",
-  "short_name": "Tenpages",
+  "name": "Tenreads",
+  "short_name": "Tenreads",
   "description": "Score every book you read, out of 10.",
   "start_url": "/",
   "scope": "/",

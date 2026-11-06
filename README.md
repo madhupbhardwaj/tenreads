@@ -1,4 +1,4 @@
-# Tenpages
+# Tenreads
 
 Score every book you read, out of 10. The same app as Tenbars, built for books.
 
@@ -6,7 +6,7 @@ Plain HTML, CSS and JavaScript in one `index.html`, with Firebase for Google sig
 
 ## What carried over from Tenbars
 
-| Tenbars | Tenpages |
+| Tenbars | Tenreads |
 | --- | --- |
 | Search a series, score the series | Search a book (or author), score it out of 10 |
 | Score each episode | Score each book in an author's list, right on their page |
@@ -31,8 +31,8 @@ Open http://localhost:8000. Without Firebase set up, ratings are saved in the br
 
 ## Turn on accounts (Firebase)
 
-1. Create a **new** Firebase project for Tenpages. Use a separate one from Tenbars: Firestore rules apply to the whole project, so publishing these rules to the Tenbars project would replace its rules and break it.
-2. Add a web app, copy the config, and paste it into `FIREBASE_CONFIG` near the top of the script in `index.html`.
+1. Create a **new** Firebase project for Tenreads. Use a separate one from Tenbars: Firestore rules apply to the whole project, so publishing these rules to the Tenbars project would replace its rules and break it.
+2. Add a web app, copy the config, and paste it into `FIREBASE_CONFIG` near the top of the script in `index.html`. (Already filled in for the `tenreads-9ecf6` project. The web apiKey is meant to be public; what protects the data is `firestore.rules`.)
 3. Authentication > Sign-in method: turn on Google. Under Settings > Authorized domains, add your Vercel domain.
 4. Firestore Database: create one, then paste `firestore.rules` into the Rules tab and publish.
 5. Where the data lives: `usernames/{name}`, `profiles/{uid}`, `users/{uid}/books/{workId}`.
@@ -41,13 +41,13 @@ Open http://localhost:8000. Without Firebase set up, ratings are saved in the br
 
 Import the repo (no build settings needed). Then add one environment variable so shared profile and book links get proper previews:
 
-`FIREBASE_PROJECT_ID` = your Firebase project ID (the same one as `projectId` in `index.html`)
+`FIREBASE_PROJECT_ID` = `tenreads-9ecf6` (the same as `projectId` in `index.html`). Redeploy after adding it.
 
-Without it everything works; shared links just show the generic Tenpages card.
+Without it everything works; shared links just show the generic Tenreads card.
 
 ## Change the name or domain
 
-`tenpages.vercel.app` appears in `index.html` (canonical and og tags) and in the picture `og.png`. Replace it with your real address. The app name "Tenpages" appears in `index.html`, `manifest.webmanifest`, `sw.js` and `api/page.js`.
+`tenreads.vercel.app` appears in `index.html` (canonical and og tags) and in the picture `og.png`. Replace it with your real address. The app name "Tenreads" appears in `index.html`, `manifest.webmanifest`, `sw.js` and `api/page.js`.
 
 ## Easy things to tweak
 

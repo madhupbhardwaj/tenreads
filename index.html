@@ -4,28 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!--meta:start-->
-<title>Tenpages</title>
+<title>Tenreads</title>
 <meta name="description" content="Search any book and score it out of 10. Build a shelf of everything you have read.">
-<link rel="canonical" href="https://tenpages.vercel.app/">
-<meta property="og:title" content="Tenpages">
+<link rel="canonical" href="https://tenreads.vercel.app/">
+<meta property="og:title" content="Tenreads">
 <meta property="og:description" content="Search any book and score it out of 10. Build a shelf of everything you have read.">
-<meta property="og:url" content="https://tenpages.vercel.app/">
-<meta property="og:image" content="https://tenpages.vercel.app/og.png">
+<meta property="og:url" content="https://tenreads.vercel.app/">
+<meta property="og:image" content="https://tenreads.vercel.app/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Tenpages: score every book you read, out of 10.">
+<meta property="og:image:alt" content="Tenreads: score every book you read, out of 10.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://tenpages.vercel.app/og.png">
+<meta name="twitter:image" content="https://tenreads.vercel.app/og.png">
 <!--meta:end-->
-<meta property="og:site_name" content="Tenpages">
+<meta property="og:site_name" content="Tenreads">
 <meta property="og:type" content="website">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="application-name" content="Tenpages">
-<meta name="apple-mobile-web-app-title" content="Tenpages">
+<meta name="application-name" content="Tenreads">
+<meta name="apple-mobile-web-app-title" content="Tenreads">
 <meta name="theme-color" content="#F2EFE9" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#131210" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%230F7B5F' d='M16.00 1.00 L19.52 5.16 L24.82 3.86 L25.22 9.30 L30.27 11.36 L27.40 16.00 L30.27 20.64 L25.22 22.70 L24.82 28.14 L19.52 26.84 L16.00 31.00 L12.48 26.84 L7.18 28.14 L6.78 22.70 L1.73 20.64 L4.60 16.00 L1.73 11.36 L6.78 9.30 L7.18 3.86 L12.48 5.16Z'/%3E%3C/svg%3E">
@@ -545,7 +545,7 @@ a.by:hover{color:var(--signal)}
 <body>
 <header class="top">
   <div class="wrap top-inner">
-    <a href="#/" class="brand" aria-label="Tenpages home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.00 1.00 L19.52 5.16 L24.82 3.86 L25.22 9.30 L30.27 11.36 L27.40 16.00 L30.27 20.64 L25.22 22.70 L24.82 28.14 L19.52 26.84 L16.00 31.00 L12.48 26.84 L7.18 28.14 L6.78 22.70 L1.73 20.64 L4.60 16.00 L1.73 11.36 L6.78 9.30 L7.18 3.86 L12.48 5.16Z"/></svg>Tenpages</a>
+    <a href="#/" class="brand" aria-label="Tenreads home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.00 1.00 L19.52 5.16 L24.82 3.86 L25.22 9.30 L30.27 11.36 L27.40 16.00 L30.27 20.64 L25.22 22.70 L24.82 28.14 L19.52 26.84 L16.00 31.00 L12.48 26.84 L7.18 28.14 L6.78 22.70 L1.73 20.64 L4.60 16.00 L1.73 11.36 L6.78 9.30 L7.18 3.86 L12.48 5.16Z"/></svg>Tenreads</a>
     <form class="search" id="search-form" role="search" autocomplete="off">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <label class="sr" for="q">Search books</label>
@@ -572,7 +572,7 @@ a.by:hover{color:var(--signal)}
 
 <footer>
   <div class="wrap">
-    <p id="install-row" class="install-row" hidden><button type="button" class="linkish" data-install>Install Tenpages as an app</button> on your phone or computer. It opens like any other app, straight from your home screen.</p>
+    <p id="install-row" class="install-row" hidden><button type="button" class="linkish" data-install>Install Tenreads as an app</button> on your phone or computer. It opens like any other app, straight from your home screen.</p>
     <p>Book details and covers come from <a href="https://openlibrary.org" target="_blank" rel="noopener">Open Library</a>. <span id="storage-note">Your ratings are stored in this browser.</span></p>
   </div>
 </footer>
@@ -599,7 +599,7 @@ const FIREBASE_VERSION = '10.14.1';
 /* Book data and covers come from Open Library (openlibrary.org). No key needed. */
 const API = 'https://openlibrary.org';
 const COVERS = 'https://covers.openlibrary.org';
-const KEY = 'tenpages.ratings.v1';
+const KEY = 'tenreads.ratings.v1';
 const SEARCH_FIELDS = 'key,title,author_name,author_key,first_publish_year,cover_i,number_of_pages_median,edition_count,ratings_average,ratings_count';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -611,11 +611,11 @@ function readJSON(k) { try { return JSON.parse(localStorage.getItem(k)); } catch
 function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
 /* Keep only the newest few cached profiles so storage stays small */
 function cacheProfile(name, data) {
-  const idx = (readJSON('tenpages.pidx') || []).filter(n => n !== name);
+  const idx = (readJSON('tenreads.pidx') || []).filter(n => n !== name);
   idx.unshift(name);
-  idx.splice(6).forEach(n => { try { localStorage.removeItem('tenpages.p.' + n); } catch (e) {} });
-  if (!writeJSON('tenpages.p.' + name, data)) return;
-  writeJSON('tenpages.pidx', idx.slice(0, 6));
+  idx.splice(6).forEach(n => { try { localStorage.removeItem('tenreads.p.' + n); } catch (e) {} });
+  if (!writeJSON('tenreads.p.' + name, data)) return;
+  writeJSON('tenreads.pidx', idx.slice(0, 6));
 }
 
 /* ---------- Storage (scores are 1–10) ----------
@@ -702,7 +702,7 @@ function onUser(u) {
   authReady = true;
   if (unsub) { unsub(); unsub = null; }
   user = u ? { uid: u.uid, name: u.displayName || '', email: u.email || '', photo: u.photoURL || '' } : null;
-  myProfile = user ? (readJSON('tenpages.me.' + user.uid) || undefined) : null;
+  myProfile = user ? (readJSON('tenreads.me.' + user.uid) || undefined) : null;
   renderAccount();
   authSettledDone();
   if (!user) { store = load(); rerender(); return; }
@@ -965,7 +965,7 @@ function toast(m, ms = 2000, action) {
     t.append(b);
   }
   t.classList.toggle('act', !!action); t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), ms); }
-function setTitle(t) { document.title = t ? `${t} | Tenpages` : 'Tenpages'; }
+function setTitle(t) { document.title = t ? `${t} | Tenreads` : 'Tenreads'; }
 function setNav(v) { document.body.dataset.view = v || 'other'; $$('[data-nav]').forEach(a => { const on = a.dataset.nav === v; a.classList.toggle('on', on); on ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'); }); app.dataset.view = v; }
 const skeletons = n => Array.from({ length: n }, () => `<div><div class="poster skel"></div><div class="skel skel-line" style="width:80%"></div><div class="skel skel-line" style="width:45%"></div></div>`).join('');
 function failBox(target, msg, retry) {
@@ -1159,7 +1159,7 @@ async function loadList(slug) {
   const k = slug || '_trending';
   if (lists[k]) return lists[k];
   // These lists barely change, so keep a trimmed copy on this device for a day.
-  const saved = readJSON('tenpages.list.' + k);
+  const saved = readJSON('tenreads.list.' + k);
   if (saved && Array.isArray(saved.list) && saved.list.length && Date.now() - saved.t < 864e5) {
     saved.list.forEach(b => { if (!seen.has(b.id)) seen.set(b.id, b); });
     return (lists[k] = saved.list);
@@ -1176,7 +1176,7 @@ async function loadList(slug) {
   list = list.filter(b => b.cover).slice(0, 48);
   if (!list.length) throw new Error('empty');
   lists[k] = list;
-  writeJSON('tenpages.list.' + k, { t: Date.now(), list });
+  writeJSON('tenreads.list.' + k, { t: Date.now(), list });
   return list;
 }
 async function renderHome() {
@@ -1189,7 +1189,7 @@ async function renderHome() {
         <h1>Keep score of every book you read.</h1>
         <p>Search for a book and give it a score out of 10. Your shelf shows which ones you loved, and friends can see it too.</p>
         <form id="intro-form" role="search"><label class="sr" for="intro-q">Search books</label><input id="intro-q" type="search" placeholder="Dune, Piranesi, Kafka on the Shore…" enterkeyhint="search"><button class="btn primary">Search</button></form>
-        <p class="install-hint" data-install-hint hidden>${BURST_SVG}<span>Get Tenpages on your home screen.</span><button type="button" class="linkish" data-install>Install</button><button type="button" class="hint-x" data-install-dismiss aria-label="Hide this">×</button></p>
+        <p class="install-hint" data-install-hint hidden>${BURST_SVG}<span>Get Tenreads on your home screen.</span><button type="button" class="linkish" data-install>Install</button><button type="button" class="hint-x" data-install-dismiss aria-label="Hide this">×</button></p>
       </div>
       <div class="stack" id="stack" aria-hidden="true"></div>
     </section>
@@ -1507,7 +1507,7 @@ function levelBadge(count) {
 }
 /* Animate the badge once on Your ratings right after a level-up. */
 function justLeveled() {
-  try { const v = sessionStorage.getItem('tenpages.levelup'); sessionStorage.removeItem('tenpages.levelup'); return !!v; } catch (e) { return false; }
+  try { const v = sessionStorage.getItem('tenreads.levelup'); sessionStorage.removeItem('tenreads.levelup'); return !!v; } catch (e) { return false; }
 }
 function levelCardHTML(count, pop) {
   const { cur, next } = levelFor(count);
@@ -1540,7 +1540,7 @@ function setRating(b, v) {
   const after = levelFor(ratedCount()).cur;
   if (after && (!before || after.n > before.n)) {
     toast(`Level up! You’re now level ${after.n}, ${after.name}.`, 3600);
-    try { sessionStorage.setItem('tenpages.levelup', String(after.n)); } catch (e) {}
+    try { sessionStorage.setItem('tenreads.levelup', String(after.n)); } catch (e) {}
   }
 }
 /* Keep the score badges on any covers on screen in step with your ratings. */
@@ -1789,7 +1789,7 @@ async function loadMyProfile() {
     const snap = await getDoc(doc(fb.db, 'profiles', uid));
     if (!user || user.uid !== uid) return;
     myProfile = snap.exists() ? snap.data() : null;
-    writeJSON('tenpages.me.' + uid, myProfile);
+    writeJSON('tenreads.me.' + uid, myProfile);
     if (myProfile && user.photo && myProfile.photo !== user.photo) {
       myProfile.photo = user.photo;
       setDoc(doc(fb.db, 'profiles', uid), { photo: user.photo }, { merge: true }).catch(() => {});
@@ -1814,7 +1814,7 @@ async function saveProfile({ username, name, isPublic }) {
     tx.set(doc(fb.db, 'profiles', uid), data);
   });
   myProfile = data;
-  writeJSON('tenpages.me.' + uid, data);
+  writeJSON('tenreads.me.' + uid, data);
 }
 
 /* Find public profiles whose username starts with q. */
@@ -1984,7 +1984,7 @@ async function renderPeople(q) {
 }
 
 function profileGate(prof, name) {
-  if (!prof) return `<div class="empty">There’s no one called @${esc(cleanName(name))} on Tenpages. Check the link, or <a href="#/people" style="color:var(--signal)">search for people</a>.</div>`;
+  if (!prof) return `<div class="empty">There’s no one called @${esc(cleanName(name))} on Tenreads. Check the link, or <a href="#/people" style="color:var(--signal)">search for people</a>.</div>`;
   if (prof.private) return `<div class="empty">@${esc(cleanName(name))} keeps their ratings private.</div>`;
   return '';
 }
@@ -1993,7 +1993,7 @@ function profileGate(prof, name) {
 async function renderProfile(name) {
   const id = ++renderId; current = null; setNav('people'); setTitle('@' + cleanName(name));
   // A profile you've opened before appears at once from this device, then is refreshed.
-  const ckey = cleanName(name), cached = readJSON('tenpages.p.' + ckey);
+  const ckey = cleanName(name), cached = readJSON('tenreads.p.' + ckey);
   const hasCache = !!(cached && cached.prof && Array.isArray(cached.rows));
   if (hasCache) paintProfile({ ...cached.prof, own: !!(user && user.uid === cached.prof.uid) }, cached.rows);
   else app.innerHTML = `<section class="wrap page"><div class="prof-head"><span class="av lg skel"></span><div><div class="skel skel-line" style="height:36px;width:240px"></div><div class="skel skel-line" style="width:120px"></div></div></div></section>`;
@@ -2027,7 +2027,7 @@ async function renderProfile(name) {
   }
   if (id !== renderId) return;
   const gate = profileGate(prof, name);
-  if (gate) { try { localStorage.removeItem('tenpages.p.' + ckey); } catch (e) {} app.innerHTML = `<section class="wrap page">${gate}</section>`; return; }
+  if (gate) { try { localStorage.removeItem('tenreads.p.' + ckey); } catch (e) {} app.innerHTML = `<section class="wrap page">${gate}</section>`; return; }
   const { own: _own, rows: _rows, ...plain } = prof;
   cacheProfile(ckey, { prof: plain, rows });
   if (hasCache && JSON.stringify([cached.prof, cached.rows]) === JSON.stringify([plain, rows])) return; // nothing changed
@@ -2051,7 +2051,7 @@ function paintProfile(prof, rows) {
     ${rows.length ? `<section class="shelf-sec"><h2 class="sub-h">${esc(who)}’s shelf by score</h2><div class="gridmap"><div id="shelfmap">${shelfMapHTML(rows, href)}</div></div></section>` : ''}
     <ul class="mine" id="their-list"></ul>
   </section>`;
-  $('#share-prof').onclick = () => share(profileUrl(prof.username), `${prof.name || prof.username} on Tenpages`);
+  $('#share-prof').onclick = () => share(profileUrl(prof.username), `${prof.name || prof.username} on Tenreads`);
   const draw = () => {
     const sort = $('#psort') ? $('#psort').value : 'recent';
     const sorted = rows.slice().sort((a, b) => sort === 'name' ? (a.title || '').localeCompare(b.title || '')
@@ -2143,7 +2143,7 @@ function refreshInstall() {
   const can = !isStandalone() && !!(installEvt || isIOS());
   $$('[data-install]').forEach(b => { b.hidden = !can; });
   const row = $('#install-row'); if (row) row.hidden = !can;
-  let dismissed = false; try { dismissed = !!localStorage.getItem('tenpages.installHint'); } catch (e) {}
+  let dismissed = false; try { dismissed = !!localStorage.getItem('tenreads.installHint'); } catch (e) {}
   $$('[data-install-hint]').forEach(h => { h.hidden = !can || dismissed || !matchMedia('(max-width: 1024px)').matches; });
 }
 async function doInstall() {
@@ -2159,7 +2159,7 @@ async function doInstall() {
   const s = document.createElement('div');
   s.className = 'sheet';
   s.innerHTML = `<div class="sheet-box" role="dialog" aria-modal="true" aria-labelledby="sheet-h">
-    <h2 id="sheet-h">Add Tenpages to your home screen</h2>
+    <h2 id="sheet-h">Add Tenreads to your home screen</h2>
     <ol><li>Tap the Share button <svg class="ios-share" viewBox="0 0 24 24" aria-label="Share"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M5 11v9h14v-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> in Safari’s toolbar.</li>
       <li>Scroll down and tap <b>Add to Home Screen</b>, then <b>Add</b>.</li></ol>
     <button type="button" class="btn primary">Got it</button></div>`;
@@ -2170,10 +2170,10 @@ async function doInstall() {
   $('.btn', s).focus();
 }
 addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; refreshInstall(); });
-addEventListener('appinstalled', () => { installEvt = null; refreshInstall(); toast('Tenpages is on your home screen now'); });
+addEventListener('appinstalled', () => { installEvt = null; refreshInstall(); toast('Tenreads is on your home screen now'); });
 document.addEventListener('click', e => {
   if (e.target.closest('[data-install]')) { e.preventDefault(); doInstall(); }
-  else if (e.target.closest('[data-install-dismiss]')) { try { localStorage.setItem('tenpages.installHint', '1'); } catch (x) {} refreshInstall(); }
+  else if (e.target.closest('[data-install-dismiss]')) { try { localStorage.setItem('tenreads.installHint', '1'); } catch (x) {} refreshInstall(); }
 });
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(location.hostname))) {
   addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
