@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    function profilePath(uid) { return /databases/$(database)/documents/profiles/$(uid); }
+    function isPublic(uid) { return exists(profilePath(uid)) && get(profilePath(uid)).data.public == true; }
+
+    // Ratings. Only the owner can change them.
+    // Anyone can read them while the owner's profile is public.
+    match /users/{uid}/books/{bookId} {
+      allow read: if isOwner(uid) || isPublic(uid);
+      allow write: if isOwner(uid);
+    }
+
+    // Usernames. One document per taken name, so no two people can claim the same one.
+    match /usernames/{name} {
+      allow read: if true;
+      allow create: if signedIn()
+        && name.matches('^[a-z0-9_]{3,20}$')
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == request.auth.uid;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    // Profiles. Public ones can be read by anyone. Only the owner can change theirs,
+    // and only to a username they actually hold.
+    match /profiles/{uid} {
+      allow read: if isOwner(uid) || resource.data.public == true;
+      allow create, update: if isOwner(uid)
+        && request.resource.data.public is bool
+        && request.resource.data.username is string
+        && getAfter(/databases/$(database)/documents/usernames/$(request.resource.data.username)).data.uid == uid;
+      allow delete: if isOwner(uid);
+    }
+  }
+}

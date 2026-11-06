@@ -1,0 +1,2201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--meta:start-->
+<title>Tenpages</title>
+<meta name="description" content="Search any book and score it out of 10. Build a shelf of everything you have read.">
+<link rel="canonical" href="https://tenpages.vercel.app/">
+<meta property="og:title" content="Tenpages">
+<meta property="og:description" content="Search any book and score it out of 10. Build a shelf of everything you have read.">
+<meta property="og:url" content="https://tenpages.vercel.app/">
+<meta property="og:image" content="https://tenpages.vercel.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Tenpages: score every book you read, out of 10.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tenpages.vercel.app/og.png">
+<!--meta:end-->
+<meta property="og:site_name" content="Tenpages">
+<meta property="og:type" content="website">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Tenpages">
+<meta name="apple-mobile-web-app-title" content="Tenpages">
+<meta name="theme-color" content="#F2EFE9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131210" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%230F7B5F' d='M16.00 1.00 L19.52 5.16 L24.82 3.86 L25.22 9.30 L30.27 11.36 L27.40 16.00 L30.27 20.64 L25.22 22.70 L24.82 28.14 L19.52 26.84 L16.00 31.00 L12.48 26.84 L7.18 28.14 L6.78 22.70 L1.73 20.64 L4.60 16.00 L1.73 11.36 L6.78 9.30 L7.18 3.86 L12.48 5.16Z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://openlibrary.org" crossorigin>
+<link rel="preconnect" href="https://covers.openlibrary.org" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js">
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js">
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js">
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2EFE9;--surface:#FFFFFF;--sunk:#E5E0D7;--ink:#171512;--ink-2:#5F5A51;--line:#D9D3C7;
+  --signal:#0F7B5F;--signal-ink:#FFFFFF;--signal-soft:rgba(15,123,95,.1);
+  --display:'Gloock',Georgia,'Times New Roman',serif;
+  --sans:'Schibsted Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --gutter:clamp(16px,4vw,40px);
+}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#131210;--surface:#1D1B18;--sunk:#2D2A25;--ink:#F0ECE4;--ink-2:#A59F93;--line:#302D28;
+    --signal:#4CC9A0;--signal-ink:#06140F;--signal-soft:rgba(76,201,160,.13)}
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+main{flex:1}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,h3{margin:0;font-weight:400}
+:focus-visible{outline:2px solid var(--signal);outline-offset:2px;border-radius:3px}
+.wrap{max-width:1240px;margin:0 auto;padding-left:var(--gutter);padding-right:var(--gutter)}
+.dim{color:var(--ink-2)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Header ---------- */
+.top{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top-inner{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:28px;min-height:68px}
+.brand{display:inline-flex;align-items:center;gap:9px;font-family:var(--display);font-size:30px;line-height:1;letter-spacing:-.01em}
+.brand svg{width:28px;height:28px;flex:none;margin-top:-2px}
+.brand svg path{fill:var(--signal)}
+.nav{display:flex;gap:22px;font-size:15px;font-weight:500}
+.nav a{color:var(--ink-2);padding:6px 0;border-bottom:2px solid transparent}
+.nav a:hover{color:var(--ink)}
+.nav a.on{color:var(--ink);border-bottom-color:var(--signal)}
+.search{position:relative;max-width:460px;width:100%;justify-self:center}
+.search input{width:100%;height:42px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:0 14px 0 40px;font-size:15px;outline:none}
+.search input:focus{border-color:var(--signal);box-shadow:0 0 0 3px var(--signal-soft)}
+.search input::-webkit-search-cancel-button{-webkit-appearance:none}
+.search>svg{position:absolute;left:13px;top:50%;width:17px;height:17px;transform:translateY(-50%);color:var(--ink-2);pointer-events:none}
+.suggest{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.16);display:none;z-index:5}
+.suggest.open{display:block}
+.suggest a{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:center;padding:8px 12px}
+.suggest a:hover,.suggest a.active{background:var(--signal-soft)}
+.suggest img,.suggest .ph{width:34px;height:50px;border-radius:3px;object-fit:cover}
+.suggest b{display:block;font-weight:600;font-size:15px;line-height:1.3}
+.suggest small{display:block;color:var(--ink-2);font-size:13px}
+.suggest .all{display:block;padding:11px 12px;border-top:1px solid var(--line);font-size:14px;font-weight:500;color:var(--signal)}
+
+/* ---------- Shared ---------- */
+.ph{display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--sunk);color:var(--ink-2);font-family:var(--display);font-size:22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;border-radius:7px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:600;white-space:nowrap}
+.btn:hover{border-color:var(--ink-2)}
+.btn.primary{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.quiet{background:transparent;border-color:transparent;color:var(--ink-2)}
+.btn.quiet:hover{color:var(--ink);border-color:var(--line)}
+select.btn{appearance:none;-webkit-appearance:none;padding-right:34px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23888' stroke-width='1.6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;background-size:11px}
+.sec{margin-top:56px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;margin-bottom:20px}
+.sec-head h2{font-family:var(--display);font-size:clamp(26px,3.2vw,34px);line-height:1.1;letter-spacing:-.01em}
+.sec-head .link{font-size:15px;font-weight:500;color:var(--signal)}
+.empty{padding:40px 20px;text-align:center;color:var(--ink-2);border:1px dashed var(--line);border-radius:10px;grid-column:1/-1}
+.empty .btn{margin-top:14px}
+.page{padding-top:40px;padding-bottom:72px}
+
+/* ---------- Home ---------- */
+.intro{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:40px;align-items:center;padding:clamp(36px,7vw,84px) 0 8px}
+.intro h1{font-family:var(--display);font-size:clamp(40px,6.4vw,76px);line-height:.98;letter-spacing:-.02em;max-width:13ch}
+.intro p{margin:20px 0 28px;font-size:18px;color:var(--ink-2);max-width:46ch}
+.intro form{display:flex;gap:10px;max-width:540px}
+.intro input{flex:1;min-width:0;height:54px;border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:0 18px;font-size:17px;outline:none}
+.intro input:focus{border-color:var(--signal);box-shadow:0 0 0 3px var(--signal-soft)}
+.intro .btn{height:54px;padding:0 24px;font-size:16px}
+.stack{position:relative;height:clamp(300px,34vw,420px)}
+.stack a{position:absolute;top:50%;left:50%;width:46%;aspect-ratio:2/3;border-radius:5px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.22);transform:translate(-50%,-50%);transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.stack img{width:100%;height:100%;object-fit:cover}
+.stack.fan a:nth-child(1){transform:translate(-112%,-46%) rotate(-7deg)}
+.stack.fan a:nth-child(2){transform:translate(-50%,-54%) rotate(1deg);z-index:2}
+.stack.fan a:nth-child(3){transform:translate(12%,-44%) rotate(7deg)}
+.filters{display:flex;gap:4px 18px;flex-wrap:wrap}
+.filters button{background:none;border:0;padding:4px 0;font-size:15px;font-weight:500;color:var(--ink-2);border-bottom:2px solid transparent}
+.filters button:hover{color:var(--ink)}
+.filters button.on{color:var(--ink);border-bottom-color:var(--signal)}
+
+/* Poster grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(156px,1fr));gap:28px 20px}
+.card{display:block;min-width:0}
+.poster{position:relative;aspect-ratio:2/3;border-radius:4px;overflow:hidden;background:var(--sunk);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.poster img{width:100%;height:100%;object-fit:cover}
+.score-tag{position:absolute;right:6px;bottom:6px;min-width:30px;padding:3px 7px 2px;border-radius:4px;background:var(--signal);color:var(--signal-ink);font-family:var(--display);font-size:18px;line-height:1.1;text-align:center}
+.card h3{font-size:15px;font-weight:600;line-height:1.3;margin-top:10px}
+.card:hover h3{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.card p{margin:2px 0 0;font-size:14px;color:var(--ink-2)}
+.shelf{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(120px,148px);gap:18px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.shelf .card{scroll-snap-align:start}
+.skel{background:var(--sunk);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.55}}
+.skel-line{height:12px;border-radius:4px;margin-top:10px}
+
+/* ---------- Meter (rating control, 1–10) ---------- */
+.meter{display:inline-flex;align-items:center;gap:12px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.bars{position:relative;display:flex;align-items:flex-end;gap:var(--g,3px);height:var(--h,22px);padding:2px 0;touch-action:manipulation;border-radius:3px}
+.bars i{display:block;flex:none;width:var(--w,6px);border-radius:1.5px;background:var(--sunk);transition:background-color .12s}
+.bars i.f{background:var(--signal)}
+.meter.preview .bars i.f{background:color-mix(in srgb,var(--signal) 55%,var(--sunk))}
+.meter-read{display:inline-flex;flex-direction:column;justify-content:center}
+.meter-val{font-family:var(--display);font-size:var(--fs,20px);line-height:1;min-width:calc(var(--fs,20px) * 2.6);font-variant-numeric:tabular-nums}
+.meter-val small{font-family:var(--sans);font-size:.55em;color:var(--ink-2);margin-left:1px}
+.meter-val.none{font-family:var(--sans);font-size:14px;color:var(--ink-2)}
+/* The interactive version: bigger bars, a roomier hit area, a word for each score and a clear button */
+.meter.live{--h:30px;--w:10px;--g:4px;gap:14px}
+.meter.live .bars{cursor:pointer;touch-action:pan-y;height:calc(var(--h) + 12px);padding:6px;margin:-6px;border-radius:8px}
+.meter.live .bars:focus-visible{outline:2px solid var(--signal);outline-offset:0}
+.meter.live .bars i{background:color-mix(in srgb,var(--ink) 13%,transparent);border-radius:2px}
+.meter.live .bars i.f{background:var(--signal)}
+.meter.live.preview .bars i.f{background:color-mix(in srgb,var(--signal) 45%,transparent)}
+.meter.live.preview .bars i.at{background:var(--signal)}
+.meter.live .meter-read{width:calc(var(--fs,20px) * 3)}
+.meter.live .meter-val{min-width:0}
+.meter.live .meter-val.none{color:var(--signal);font-weight:600}
+.meter-word{font-size:12px;line-height:1.2;color:var(--ink-2);margin-top:4px;min-height:1.2em;white-space:nowrap}
+.meter.lg .meter-word{font-size:13px}
+.meter-clear{flex:none;display:inline-grid;place-items:center;width:34px;height:34px;margin-left:-6px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--ink-2);cursor:pointer;visibility:hidden}
+.meter.scored .meter-clear{visibility:visible}
+.meter-clear:hover{background:var(--sunk);color:var(--ink)}
+.meter-clear:focus-visible{outline:2px solid var(--signal);outline-offset:1px}
+.tip{position:absolute;left:0;bottom:calc(100% + 4px);z-index:5;transform:translate(-50%,4px);background:var(--ink);color:var(--paper);font:600 14px/1 var(--sans);padding:7px 10px;border-radius:8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s,transform .12s,left .06s;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+.tip::after{content:"";position:absolute;left:50%;top:100%;margin-left:-5px;border:5px solid transparent;border-top-color:var(--ink)}
+.tip.on{opacity:1;transform:translate(-50%,0)}
+.meter.lg{--h:40px;--w:11px;--g:5px;--fs:34px}
+.meter.live.lg{--h:40px;--w:14px;--g:5px}
+.meter.live.lg .meter-read{width:auto;min-width:calc(var(--fs) * 2.8)}
+.meter.sm{--h:16px;--w:4px;--g:2px;--fs:16px}
+.meter.pulse .bars i.f{animation:lift .32s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 22ms)}
+@keyframes lift{from{transform:scaleY(.4);transform-origin:bottom}to{transform:none}}
+
+/* ---------- Show page ---------- */
+.show-head{display:grid;grid-template-columns:clamp(160px,20vw,240px) minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:clamp(20px,4vw,48px);position:relative}
+.show-poster{grid-row:1/3;align-self:start;width:100%;aspect-ratio:2/3;border-radius:6px;overflow:hidden;background:var(--sunk);box-shadow:0 22px 44px rgba(0,0,0,.28)}
+.show-poster img{width:100%;height:100%;object-fit:cover}
+.show-title{padding-top:28px}
+.show-title h1{font-family:var(--display);font-size:clamp(34px,5.6vw,64px);line-height:1;letter-spacing:-.02em}
+.show-sub{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:12px;color:var(--ink-2);font-size:15px}
+.show-body{grid-column:2;min-width:0}
+.facts{display:flex;flex-wrap:wrap;margin:26px 0 0;padding:0}
+.facts div{padding:2px 22px 2px 0;margin-right:22px;border-right:1px solid var(--line)}
+.facts div:last-child{border-right:0;margin-right:0}
+.facts dt{font-size:13px;color:var(--ink-2)}
+.facts dd{margin:2px 0 0;font-family:var(--display);font-size:26px;line-height:1.15}
+.my-score{margin-top:28px;padding:20px 22px;background:var(--surface);border:1px solid var(--line);border-radius:10px;max-width:620px}
+.my-score h2{font-size:15px;font-weight:600}
+.my-score .meter{margin-top:12px}
+.track{height:4px;border-radius:2px;background:var(--sunk);overflow:hidden;margin-top:18px}
+.track span{display:block;height:100%;background:var(--signal);transition:width .3s}
+.my-score p{margin:8px 0 0;font-size:14px;color:var(--ink-2)}
+.summary{margin:24px 0 0;max-width:64ch;font-size:16px;line-height:1.65}
+
+.gridmap{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 14px;overflow-x:auto}
+.gm-row{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.gm-row b{flex:none;width:30px;font-size:13px;font-weight:600;color:var(--ink-2)}
+
+.more{background:none;border:0;padding:0;margin-top:4px;font-size:14px;font-weight:500;color:var(--signal)}
+
+/* ---------- Your ratings ---------- */
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.page-head h1{font-family:var(--display);font-size:clamp(38px,5vw,58px);line-height:1;letter-spacing:-.02em}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.recap{margin:16px 0 36px;font-size:18px;color:var(--ink-2);max-width:60ch}
+.recap strong{color:var(--ink);font-weight:600}
+.mine{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.mine li{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:20px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
+.mine .poster{width:64px;border-radius:3px}
+.mine h3{font-size:18px;font-weight:600;line-height:1.3}
+.mine h3 a:hover{text-decoration:underline;text-underline-offset:3px}
+.mine .sub{margin:2px 0 10px;font-size:14px;color:var(--ink-2)}
+.mine .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 22px;font-size:14px;color:var(--ink-2)}
+.mine .acts{display:flex;gap:6px}
+
+footer{margin-top:24px;border-top:1px solid var(--line);padding:24px 0 calc(24px + env(safe-area-inset-bottom));font-size:14px;color:var(--ink-2)}
+footer p{margin:0;max-width:72ch}
+footer a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));z-index:60;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:8px;font-size:14px;font-weight:500;transition:.2s;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.act{display:flex;align-items:center;gap:16px;padding:6px 8px 6px 16px;white-space:nowrap}
+.toast.act.show{pointer-events:auto}
+.toast-act{border:0;background:none;color:#0F7B5F;font:inherit;font-weight:700;padding:8px 10px;min-height:36px;border-radius:6px;cursor:pointer}
+@media (prefers-color-scheme:light){.toast-act{color:#8FE6C8}}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  .intro{grid-template-columns:1fr}
+  .stack{display:none}
+}
+@media (max-width:760px){
+  .top-inner{grid-template-columns:1fr auto;gap:10px 16px;padding-top:10px;padding-bottom:12px}
+  .brand{font-size:27px}
+  .brand svg{width:25px;height:25px}
+  .search{grid-column:1/-1;grid-row:2;max-width:none}
+  .nav{gap:16px;font-size:14px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:22px 14px}
+  .card h3{font-size:14px}.card p{font-size:13px}
+  .show-head{grid-template-columns:112px minmax(0,1fr)}
+  .show-poster{grid-row:1}
+  .show-title,.has-bd .show-title{padding-top:0;margin-top:0;align-self:end}
+  .show-title h1{font-size:clamp(26px,7.4vw,40px)}
+  .show-sub{font-size:14px;gap:2px 12px}
+  .show-body{grid-column:1/-1}
+  .facts{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);margin-top:22px}
+  .facts div{margin:0;padding:0 10px;border-right:1px solid var(--line)}
+  .facts div:first-child{padding-left:0}
+  .facts dt{font-size:12px;line-height:1.3}
+  .facts dd{font-size:20px}
+  .my-score{padding:16px}
+  .meter.lg{--h:32px;--w:9px;--g:4px;--fs:28px}
+  /* On phones the bars stretch across the row so every score is an easy thumb target */
+  .ep-rate .meter.live,.my-score .meter.live{display:flex;width:100%}
+  .ep-rate .meter.live .bars,.my-score .meter.live .bars{flex:1;justify-content:space-between;max-width:360px}
+  .ep-rate .meter.live .bars i,.my-score .meter.live .bars i{flex:1 1 0;width:auto;max-width:26px}
+  .mine li{grid-template-columns:52px minmax(0,1fr);gap:4px 14px}
+  .mine .poster{width:52px}
+  .mine .acts{grid-column:2;margin-top:8px}
+  .mine h3{font-size:16px}
+  .intro form{flex-direction:column}
+  .intro input{flex:none;width:100%}
+  .intro .btn{width:100%}
+  .intro p{font-size:16px}
+  .sec{margin-top:44px}
+}
+@media (max-width:340px){
+  .nav a[data-nav="home"]{display:none}
+  .meter{gap:8px}
+}
+/* ---------- Account ---------- */
+.nav{align-items:center}
+.nav a{white-space:nowrap}
+.account{display:flex;align-items:center;min-height:36px}
+.account:empty{display:none}
+.btn.signin{height:36px;padding:0 12px;gap:8px;font-size:14px}
+.btn.signin svg,.btn.google svg{width:16px;height:16px;flex:none}
+.acct{position:relative}
+.avatar{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);padding:0;overflow:hidden;background:var(--sunk);font-weight:600;font-size:15px;display:grid;place-items:center}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.acct-menu{position:absolute;right:0;top:calc(100% + 8px);width:240px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 18px 40px rgba(0,0,0,.18);padding:14px;z-index:10}
+.acct-menu .who{display:block;font-size:15px;font-weight:600}
+.acct-menu .email{display:block;font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}
+.acct-menu .btn{width:100%;margin-top:14px}
+.sync-note{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin:-18px 0 32px;font-size:15px;color:var(--ink-2)}
+.sync-note .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#1FA463;margin-right:8px;vertical-align:1px}
+@media (max-width:480px){.nav a[data-nav="home"]{display:none}}
+.nav .sm{display:none}
+@media (max-width:1100px){.nav .lg{display:none}.nav .sm{display:inline}}
+.acct-menu .menu-link{display:block;margin-top:12px;font-size:14px;font-weight:600;color:var(--signal)}
+
+/* ---------- People + profiles ---------- */
+.av{width:48px;height:48px;border-radius:50%;overflow:hidden;background:var(--sunk);display:grid;place-items:center;font-family:var(--display);font-size:21px;color:var(--ink-2);flex:none}
+.av img{width:100%;height:100%;object-fit:cover}
+.av.lg{width:76px;height:76px;font-size:32px}
+.av.sm{width:34px;height:34px;font-size:15px}
+.suggest .group{padding:9px 12px 3px;font-size:13px;color:var(--ink-2);border-top:1px solid var(--line)}
+.suggest a.person{grid-template-columns:34px 1fr}
+.people-search{display:flex;gap:10px;max-width:540px;margin-bottom:8px}
+.people-search .at{flex:1}
+.at{position:relative}
+.at>span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-2);pointer-events:none;font-size:16px}
+.at input{width:100%;height:46px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:0 14px 0 32px;font-size:16px;outline:none}
+.at input:focus,.field input:focus{border-color:var(--signal);box-shadow:0 0 0 3px var(--signal-soft)}
+.people{list-style:none;margin:20px 0 0;padding:0;border-top:1px solid var(--line);max-width:720px}
+.people a{display:grid;grid-template-columns:48px minmax(0,1fr);gap:14px;align-items:center;padding:14px 4px;border-bottom:1px solid var(--line)}
+.people a:hover b{text-decoration:underline;text-underline-offset:3px}
+.people b{display:block;font-size:17px;font-weight:600;line-height:1.3}
+.people small{display:block;font-size:14px;color:var(--ink-2)}
+.hint{margin:14px 0 0;font-size:15px;color:var(--ink-2);max-width:60ch}
+.hint a{color:var(--signal);font-weight:500}
+.prof-head{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.prof-head h1{font-family:var(--display);font-size:clamp(32px,4.6vw,52px);line-height:1.02;letter-spacing:-.02em}
+.prof-head .handle{margin:4px 0 0;font-size:16px;color:var(--ink-2)}
+.prof-head .tools{margin-left:auto}
+.back{display:inline-block;margin-bottom:18px;font-size:15px;font-weight:500;color:var(--signal)}
+.mine .you{font-size:14px;color:var(--ink)}
+.profile-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin:0 0 32px;max-width:720px}
+.profile-card h2{font-size:17px;font-weight:600}
+.profile-card>p{margin:6px 0 0;font-size:15px;color:var(--ink-2);max-width:60ch}
+.profile-card .who{display:flex;align-items:center;gap:14px}
+.profile-card .who b{display:block;font-size:17px;font-weight:600}
+.profile-card .who small{display:block;font-size:14px;color:var(--ink-2)}
+.profile-card .who .btn{margin-left:auto}
+.field{display:grid;gap:6px;margin-top:16px;max-width:420px}
+.field>label{font-size:14px;font-weight:600}
+.field>input{height:44px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:0 14px;font-size:16px;outline:none}
+.field .at input{height:44px}
+.field small{font-size:13px;color:var(--ink-2)}
+.field small.ok{color:#1A8A55}
+.field small.bad{color:#C2362B}
+@media (prefers-color-scheme:dark){.field small.ok{color:#5FD39A}.field small.bad{color:#FF8A80}}
+.check{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:15px;max-width:56ch}
+.check input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--signal);flex:none}
+.form-err{margin:12px 0 0;font-size:14px;color:#C2362B}
+@media (prefers-color-scheme:dark){.form-err{color:#FF8A80}}
+.form-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.linkrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.linkrow input{flex:1 1 220px;min-width:0;height:40px;border:1px solid var(--line);border-radius:7px;background:var(--paper);padding:0 12px;font-size:14px;color:var(--ink-2)}
+.share-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+
+/* ---------- Quick rate ---------- */
+body.qr-open{overflow:hidden}
+.qr{position:fixed;inset:0;z-index:55;display:flex;background:var(--paper)}
+.qr-box{display:flex;flex-direction:column;width:100%;height:100%;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+.qr-top{display:flex;align-items:center;gap:10px;padding:8px 12px 8px 6px}
+.qr-x{flex:none;display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--ink);cursor:pointer}
+.qr-x:hover{background:var(--sunk)}
+.qr-title{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.qr-title b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qr-count{font-size:13px;color:var(--ink-2)}
+.qr-prog{height:3px;background:var(--sunk);flex:none}
+.qr-prog span{display:block;height:100%;background:var(--signal);transition:width .3s}
+.qr-stage{flex:1;overflow-y:auto;overflow-x:hidden;padding:20px 20px 8px;overscroll-behavior:contain}
+.qr-card{max-width:520px;margin:0 auto}
+.qr-card.in-next{animation:qrNext .3s cubic-bezier(.2,.8,.2,1)}
+.qr-card.in-back{animation:qrBack .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes qrNext{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes qrBack{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+.qr-kicker{margin:16px 0 0;font-size:13px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.qr-card h2{margin:6px 0 0;font-family:var(--display);font-weight:400;font-size:clamp(26px,6vw,34px);line-height:1.08;letter-spacing:-.01em}
+.qr-meta{margin:6px 0 0;font-size:14px;color:var(--ink-2)}
+.qr-sum{margin:10px 0 0;font-size:15px;line-height:1.55;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.qr-meter{margin:26px 0 0}
+.qr .meter.live{display:flex;width:100%;--h:58px;--fs:34px}
+.qr .meter.live .bars{flex:1;justify-content:space-between}
+.qr .meter.live .bars i{flex:1 1 0;width:auto;max-width:34px;border-radius:3px}
+.qr-hint{margin:12px 0 0;font-size:13px;color:var(--ink-2)}
+.qr-foot{display:flex;justify-content:space-between;gap:12px;padding:12px 20px 16px;border-top:1px solid var(--line);flex:none}
+.qr-foot .btn{height:48px;min-width:110px;font-size:15px}
+.qr-foot .btn:disabled{opacity:.4;cursor:default}
+.qr-end{text-align:center;padding-top:6vh}
+.qr-end .qr-burst{color:var(--signal)}
+.qr-end h2{margin-top:12px}
+.qr-end .qr-sum{-webkit-line-clamp:unset;display:block;max-width:42ch;margin:12px auto 0}
+.qr-end .qr-sum strong{color:var(--ink)}
+.qr-ask{margin:28px 0 0;font-weight:600}
+.qr-end .qr-meter{margin-top:12px;text-align:left}
+.qr-end-acts{display:flex;flex-direction:column;gap:10px;margin:28px auto 0;max-width:320px}
+.qr-end-acts .btn{height:48px}
+@media (min-width:761px){
+  .qr{background:rgba(10,11,14,.55);align-items:center;justify-content:center;padding:24px}
+  .qr-box{width:min(600px,100%);height:auto;max-height:min(860px,calc(100vh - 48px));background:var(--paper);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.35);padding:0}
+  .qr-stage{padding:24px 32px 12px}
+  .qr-foot{padding:14px 32px 18px}
+  .qr-end{padding-top:12px}
+}
+@media (max-width:1024px){.ep.compact .ep-rate{grid-column:auto;justify-self:end;margin-top:0}}
+@media (max-width:760px){
+  .prof-head{gap:14px}
+  .av.lg{width:60px;height:60px;font-size:26px}
+  .prof-head .tools{margin-left:0;width:100%}
+  .profile-card{padding:16px}
+  .people-search{flex-direction:column}
+}
+@media (max-width:420px){.nav{gap:12px}.btn.signin{width:36px;padding:0}.btn.signin span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
+/* ---------- Levels ---------- */
+.lvl{display:inline-flex;align-items:center;gap:6px;padding:2px 10px 2px 3px;border-radius:999px;background:var(--signal-soft);color:var(--signal);font-family:var(--sans);font-size:13px;font-weight:600;line-height:1.2;white-space:nowrap;vertical-align:middle}
+.lvl-mark{position:relative;display:inline-grid;place-items:center;width:22px;height:22px;flex:none}
+.lvl-mark svg{position:absolute;inset:0;width:100%;height:100%}
+.lvl-mark path{fill:var(--signal)}
+.lvl-mark .n{position:relative;font-family:var(--sans);font-size:10px;font-weight:700;line-height:1;color:var(--signal-ink)}
+.lvl-mark.lg{width:68px;height:68px}
+.lvl-mark.lg .n{font-family:var(--display);font-size:26px;font-weight:400}
+.lvl-mark.off path{fill:var(--sunk)}
+.lvl-mark.off .n{color:var(--ink-2)}
+.prof-head .lvl{margin-top:10px}
+.people b .lvl{margin-left:8px;font-size:12px}
+.level-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin:0 0 24px;max-width:720px}
+.level-top{display:flex;align-items:center;gap:16px}
+.level-top h2{font-family:var(--display);font-size:30px;line-height:1.05;font-weight:400}
+.level-top p{margin:4px 0 0;font-size:15px;color:var(--ink-2)}
+.level-card .track{margin-top:18px}
+.level-card .next{margin:8px 0 0;font-size:14px;color:var(--ink-2)}
+.ladder{list-style:none;margin:20px 0 0;padding:16px 0 0;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:14px 8px}
+.ladder li{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:13px;color:var(--ink-2)}
+.ladder li strong{font-size:14px;font-weight:600;color:var(--ink-2)}
+.ladder li.got strong{color:var(--ink)}
+.ladder li.now strong{color:var(--signal)}
+.ladder .lvl-mark{width:34px;height:34px}
+.ladder .lvl-mark .n{font-size:13px}
+.lvl-mark.pop{animation:pop .5s cubic-bezier(.2,.8,.2,1.4) both}
+@keyframes pop{from{transform:scale(.6) rotate(-30deg)}to{transform:none}}
+@media (max-width:760px){.level-card{padding:16px}.level-top h2{font-size:26px}.lvl-mark.lg{width:56px;height:56px}.lvl-mark.lg .n{font-size:22px}}
+/* ---------- Account button: level + avatar ---------- */
+.acct-btn{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 4px 0 7px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.acct-btn:hover{border-color:var(--ink-2)}
+.acct-btn .lvl-mark{width:28px;height:28px}
+.acct-btn .lvl-mark .n{font-size:12px}
+.acct-btn .avatar{width:34px;height:34px;border:0}
+.acct-menu{width:270px;padding:16px}
+.acct-menu .lvl-line{display:flex;align-items:center;gap:12px;margin-top:14px;padding:10px 12px;border-radius:8px;background:var(--signal-soft);color:var(--ink)}
+.acct-menu .lvl-line .lvl-mark{width:34px;height:34px}
+.acct-menu .lvl-line .lvl-mark .n{font-size:13px}
+.acct-menu .lvl-line strong{display:block;font-size:14px;font-weight:600}
+.acct-menu .lvl-line small{display:block;font-size:13px;color:var(--ink-2)}
+.acct-menu .menu-item{display:flex;align-items:center;min-height:44px;margin-top:6px;padding:0 4px;font-size:15px;font-weight:500;color:var(--ink);border-bottom:1px solid var(--line)}
+.acct-menu .menu-item:hover{color:var(--signal)}
+.acct-menu button.menu-item{width:100%;background:none;border:0;border-bottom:1px solid var(--line);font:inherit;font-size:15px;font-weight:500;text-align:left;cursor:pointer}
+.acct-menu button.menu-item[hidden]{display:none}
+.linkish{background:none;border:0;padding:0;font:inherit;color:var(--signal);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.install-row{margin-bottom:10px!important}
+.install-row[hidden],.install-hint[hidden]{display:none}
+.install-hint{display:flex;align-items:center;gap:10px;margin:18px 0 0!important;font-size:15px!important;color:var(--ink)!important;max-width:540px!important}
+.install-hint svg{width:20px;height:20px;color:var(--signal);flex:none}
+.install-hint .linkish{min-height:40px}
+.hint-x{margin-left:auto;width:36px;height:36px;border:0;border-radius:50%;background:none;color:var(--ink-2);font-size:20px;line-height:1;cursor:pointer}
+.hint-x:hover{background:var(--sunk)}
+.sheet{position:fixed;inset:0;z-index:58;display:flex;align-items:flex-end;justify-content:center;background:rgba(10,11,14,.5)}
+.sheet-box{width:min(460px,100%);background:var(--surface);border-radius:16px 16px 0 0;padding:22px 22px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+@media (min-width:761px){.sheet{align-items:center}.sheet-box{border-radius:16px}}
+.sheet-box h2{margin:0;font-family:var(--display);font-weight:400;font-size:28px;line-height:1.1}
+.sheet-box ol{margin:14px 0 0;padding-left:22px;line-height:1.6;font-size:16px}
+.sheet-box li{margin-top:8px}
+.sheet-box .ios-share{display:inline-block;vertical-align:-3px;width:18px;height:18px;color:var(--signal)}
+.sheet-box .btn{width:100%;height:46px;margin-top:20px}
+
+/* ---------- Bottom tab bar (phones) ---------- */
+.tabbar{display:none}
+@media (max-width:760px){
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+  .tabbar{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);position:fixed;left:0;right:0;bottom:0;z-index:45;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+  .tabbar a,.tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;padding:0;background:none;border:0;font-size:12px;font-weight:500;color:var(--ink-2)}
+  .tabbar svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .tabbar .on{color:var(--signal)}
+  .tabbar .on svg{stroke-width:2.3}
+  .tabbar [hidden]{display:none}
+  .nav>a{display:none}
+  .top-inner{min-height:60px;padding-top:8px;padding-bottom:8px}
+  .search{display:none}
+  body.search-open .search,body[data-view="search"] .search{display:block}
+  body.search-open .top-inner,body[data-view="search"] .top-inner{padding-bottom:12px}
+  .toast{bottom:calc(76px + env(safe-area-inset-bottom))}
+  .filters{flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 calc(var(--gutter) * -1);padding:0 var(--gutter);gap:0 20px}
+  .filters::-webkit-scrollbar{display:none}
+  .filters button{flex:none}
+}
+
+/* ---------- Touch screens (and any phone-width screen): bigger targets ---------- */
+@media (pointer:coarse),(max-width:760px){
+  .meter.live{--h:38px;--w:14px;--g:5px}
+  .meter.live.lg{--h:44px;--w:16px;--g:6px}
+  .meter-clear{width:44px;height:44px;margin-left:-10px}
+  .nav a{padding:12px 0}
+  .brand{min-height:44px}
+  .filters button{min-height:44px}
+  .more{min-height:36px;padding:6px 0}
+  .back{padding:10px 0;margin-bottom:8px}
+  .sec-head .link{display:inline-flex;align-items:center;min-height:44px}
+  .mine h3 a{display:inline-block;padding:8px 0}
+  .hint a{display:inline-block;padding:8px 0}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+/* ---------- Book additions ---------- */
+[hidden]{display:none!important}
+.sec-tools{margin:-6px 0 18px}
+a.by{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+a.by:hover{color:var(--signal)}
+.show-sub a.by{color:var(--ink)}
+.facts dd small{font-family:var(--sans);font-size:.55em;color:var(--ink-2);margin-left:1px}
+.blurb{margin:24px 0 0;max-width:64ch;font-size:16px;line-height:1.65;max-height:9.9em;overflow:hidden;position:relative}
+.blurb p{margin:0 0 .8em}
+.blurb.open{max-height:none}
+.blurb.clamped:not(.open)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2.4em;background:linear-gradient(transparent,var(--paper));pointer-events:none}
+.blurb.author-bio{max-height:6.6em;margin-top:18px;color:var(--ink-2)}
+.blurb.author-bio.open{max-height:none}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0}
+.tags:empty{display:none}
+.tags a{padding:5px 12px;border:1px solid var(--line);border-radius:999px;font-size:13px;color:var(--ink-2);background:var(--surface)}
+.tags a:hover{color:var(--ink);border-color:var(--ink-2)}
+.sub-h{font-family:var(--display);font-weight:400;font-size:clamp(22px,2.6vw,28px);line-height:1.1;margin:0 0 14px}
+.shelf-sec{margin:0 0 32px;max-width:960px}
+.shelf-sec .gridmap{padding:16px 16px 8px}
+.gm-row{align-items:flex-start;margin-bottom:10px}
+.gm-row b{width:26px;padding-top:12px;font-family:var(--display);font-weight:400;font-size:20px;color:var(--ink)}
+.gm-cells{flex-wrap:wrap;gap:6px}
+.gm-book{flex:none;display:grid;place-items:center;width:36px;height:54px;border-radius:3px;overflow:hidden;background:var(--sunk);box-shadow:0 3px 0 var(--c,var(--line));font-family:var(--display);font-size:13px;color:var(--ink-2)}
+.gm-book img{width:100%;height:100%;object-fit:cover}
+.gm-book:hover{box-shadow:0 0 0 2px var(--ink)}
+.bks li{grid-template-columns:56px minmax(0,1fr);align-items:start}
+.bks .poster{width:56px}
+.bks .slot{margin-top:6px}
+.bks .sub{margin-bottom:4px}
+.qr-cover{height:min(38vh,320px);width:auto;aspect-ratio:2/3;margin:0 auto;border-radius:6px;overflow:hidden;background:var(--sunk);box-shadow:0 14px 30px rgba(0,0,0,.25)}
+.qr-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.qr-card:not(.qr-end) .qr-kicker{justify-content:center;text-align:center}
+.qr-card:not(.qr-end) h2,.qr-card:not(.qr-end) .qr-meta,.qr-card:not(.qr-end) .qr-hint{text-align:center}
+@media (max-width:760px){
+  .bks .meter.live{display:flex;width:100%}
+  .bks .meter.live .bars{flex:1;justify-content:space-between;max-width:360px}
+  .bks .meter.live .bars i{flex:1 1 0;width:auto;max-width:26px}
+  .blurb{font-size:15px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-inner">
+    <a href="#/" class="brand" aria-label="Tenpages home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.00 1.00 L19.52 5.16 L24.82 3.86 L25.22 9.30 L30.27 11.36 L27.40 16.00 L30.27 20.64 L25.22 22.70 L24.82 28.14 L19.52 26.84 L16.00 31.00 L12.48 26.84 L7.18 28.14 L6.78 22.70 L1.73 20.64 L4.60 16.00 L1.73 11.36 L6.78 9.30 L7.18 3.86 L12.48 5.16Z"/></svg>Tenpages</a>
+    <form class="search" id="search-form" role="search" autocomplete="off">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <label class="sr" for="q">Search books</label>
+      <input id="q" type="search" placeholder="Search for a book or author" enterkeyhint="search">
+      <div class="suggest" id="suggest"></div>
+    </form>
+    <nav class="nav" aria-label="Main">
+      <a href="#/" data-nav="home">Browse</a>
+      <a href="#/mine" data-nav="mine"><span class="lg">Your ratings</span><span class="sm">Ratings</span></a>
+      <a href="#/people" data-nav="people" id="nav-people" hidden>People</a>
+      <div class="account" id="account"></div>
+    </nav>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<nav class="tabbar" aria-label="Main">
+  <a href="#/" data-nav="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v15H5.5c-.8 0-1.5-.7-1.5-1.5zM20 5.5c0-.8-.7-1.5-1.5-1.5H13v15h5.5c.8 0 1.5-.7 1.5-1.5z"/></svg>Browse</a>
+  <button type="button" id="tab-search" data-nav="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/></svg>Search</button>
+  <a href="#/mine" data-nav="mine"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>Ratings</a>
+  <a href="#/people" data-nav="people" id="tab-people" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="8.5" r="2.8"/><path d="M16.2 14.5c2.8.3 4.6 2.1 5.3 5.5"/></svg>People</a>
+</nav>
+
+<footer>
+  <div class="wrap">
+    <p id="install-row" class="install-row" hidden><button type="button" class="linkish" data-install>Install Tenpages as an app</button> on your phone or computer. It opens like any other app, straight from your home screen.</p>
+    <p>Book details and covers come from <a href="https://openlibrary.org" target="_blank" rel="noopener">Open Library</a>. <span id="storage-note">Your ratings are stored in this browser.</span></p>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+/* =====================================================================
+   FIREBASE SETUP: paste your web app config here (Firebase console >
+   Project settings > Your apps > SDK setup and configuration > Config).
+   Leave apiKey empty and the site runs without accounts, saving
+   ratings in the browser only.
+   ===================================================================== */
+const FIREBASE_CONFIG = {
+  apiKey: '',
+  authDomain: '',
+  projectId: '',
+  storageBucket: '',
+  messagingSenderId: '',
+  appId: ''
+};
+const FIREBASE_VERSION = '10.14.1';
+
+/* Book data and covers come from Open Library (openlibrary.org). No key needed. */
+const API = 'https://openlibrary.org';
+const COVERS = 'https://covers.openlibrary.org';
+const KEY = 'tenpages.ratings.v1';
+const SEARCH_FIELDS = 'key,title,author_name,author_key,first_publish_year,cover_i,number_of_pages_median,edition_count,ratings_average,ratings_count';
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const app = $('#app');
+
+/* Small helpers for things kept on this device to make repeat visits instant */
+function readJSON(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+/* Keep only the newest few cached profiles so storage stays small */
+function cacheProfile(name, data) {
+  const idx = (readJSON('tenpages.pidx') || []).filter(n => n !== name);
+  idx.unshift(name);
+  idx.splice(6).forEach(n => { try { localStorage.removeItem('tenpages.p.' + n); } catch (e) {} });
+  if (!writeJSON('tenpages.p.' + name, data)) return;
+  writeJSON('tenpages.pidx', idx.slice(0, 6));
+}
+
+/* ---------- Storage (scores are 1–10) ----------
+   store.books[workId] = { id, title, author, cover, year, pages, rating, updated }  */
+function load() {
+  try { const d = JSON.parse(localStorage.getItem(KEY)); if (d && d.books) return d; } catch (e) {}
+  return { version: 1, books: {} };
+}
+function guestData() {
+  try { const d = JSON.parse(localStorage.getItem(KEY)); if (d && d.books && Object.keys(d.books).length) return d; } catch (e) {}
+  return null;
+}
+/* ids: the books that changed, so only those are sent to the account */
+function save(ids) {
+  try { localStorage.setItem(localKey(), JSON.stringify(store)); }
+  catch (e) { if (!user) toast('Ratings could not be saved. This browser is blocking storage.'); }
+  if (user && ids) queuePush(ids);
+  refreshLevelChip();
+}
+let store = load();
+
+
+/* ---------- Accounts: Google sign-in + Firestore (optional) ---------- */
+const accountsOn = !!FIREBASE_CONFIG.apiKey;
+let fb = null;      // { auth, db, au, fs } once Firebase has loaded
+let user = null;    // { uid, name, email, photo } while signed in
+let unsub = null;   // live-sync listener
+let authReady = false;
+let myProfile = undefined; // undefined while loading, null if the user has no profile yet
+let fbReadyDone, authSettledDone;
+const fbReady = new Promise(r => { fbReadyDone = r; });       // resolves to fb, or null without accounts
+const authSettled = new Promise(r => { authSettledDone = r; }); // resolves once we know who's signed in
+const pending = new Set();
+let pushT;
+function localKey() { return user ? `${KEY}.${user.uid}` : KEY; }
+
+function queuePush(ids) {
+  [].concat(ids).forEach(id => pending.add(String(id)));
+  clearTimeout(pushT); pushT = setTimeout(push, 600);
+}
+async function push() {
+  if (!user || !fb || !pending.size) return;
+  const uid = user.uid, ids = [...pending];
+  pending.clear();
+  const { doc, setDoc, deleteDoc } = fb.fs;
+  try {
+    await Promise.all(ids.map(id => {
+      const ref = doc(fb.db, 'users', uid, 'books', id);
+      return store.books[id] ? setDoc(ref, store.books[id]) : deleteDoc(ref);
+    }));
+    if (myProfile && user && user.uid === uid) {
+      myProfile.stats = computeStats();
+      setDoc(doc(fb.db, 'profiles', uid), { stats: myProfile.stats, updated: Date.now() }, { merge: true }).catch(console.error);
+    }
+  } catch (e) {
+    console.error(e);
+    if (user && user.uid === uid) { ids.forEach(i => pending.add(i)); clearTimeout(pushT); pushT = setTimeout(push, 5000); }
+    toast(e.code === 'permission-denied' ? 'Your account’s database rules blocked the save. Check the Firestore rules.' : 'Couldn’t save to your account yet. Trying again shortly.');
+  }
+}
+
+async function initAccounts() {
+  if (!accountsOn) { renderAccount(); fbReadyDone(null); authSettledDone(); return; }
+  $('#nav-people').hidden = false; $('#tab-people').hidden = false;
+  const base = `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/`;
+  try {
+    const [a, au, fs] = await Promise.all(['firebase-app.js', 'firebase-auth.js', 'firebase-firestore.js'].map(f => import(base + f)));
+    const fbApp = a.initializeApp(FIREBASE_CONFIG);
+    // Keep a copy of the account's data in this browser so repeat visits show instantly.
+    let db;
+    try { db = fs.initializeFirestore(fbApp, { ignoreUndefinedProperties: true, localCache: fs.persistentLocalCache({ tabManager: fs.persistentMultipleTabManager() }) }); }
+    catch (e) { db = fs.initializeFirestore(fbApp, { ignoreUndefinedProperties: true }); }
+    fb = { auth: au.getAuth(fbApp), db, au, fs };
+    fbReadyDone(fb);
+    au.getRedirectResult(fb.auth).catch(authError);
+    au.onAuthStateChanged(fb.auth, onUser);
+  } catch (e) {
+    console.error('Firebase failed to load', e);
+    fb = null; authReady = true; renderAccount(); fbReadyDone(null); authSettledDone();
+  }
+}
+
+function onUser(u) {
+  authReady = true;
+  if (unsub) { unsub(); unsub = null; }
+  user = u ? { uid: u.uid, name: u.displayName || '', email: u.email || '', photo: u.photoURL || '' } : null;
+  myProfile = user ? (readJSON('tenpages.me.' + user.uid) || undefined) : null;
+  renderAccount();
+  authSettledDone();
+  if (!user) { store = load(); rerender(); return; }
+  loadMyProfile();
+
+  // Show what this device already has for the account, then sync with the cloud.
+  try { const d = JSON.parse(localStorage.getItem(localKey())); store = d && d.books ? d : { version: 1, books: {} }; }
+  catch (e) { store = { version: 1, books: {} }; }
+  rerender();
+
+  const { collection, onSnapshot } = fb.fs;
+  let first = true;
+  unsub = onSnapshot(collection(fb.db, 'users', user.uid, 'books'), { includeMetadataChanges: true }, snap => {
+    const toPush = [];
+    let changed = false;
+    // A copy kept in this browser arrives first. Show it right away, but only trust the
+    // server's answer when deciding what to upload or what was deleted elsewhere.
+    if (first && snap.metadata.fromCache) {
+      let any = false;
+      snap.forEach(d => {
+        const r = { ...d.data(), id: d.id }, l = store.books[d.id];
+        if (!l || (r.updated || 0) > (l.updated || 0)) { store.books[d.id] = r; any = true; }
+      });
+      if (any) { try { localStorage.setItem(localKey(), JSON.stringify(store)); } catch (e) {} rerender(); }
+      return;
+    }
+    if (first) {
+      first = false;
+      const cloud = {};
+      snap.forEach(d => { cloud[d.id] = { ...d.data(), id: d.id }; });
+      for (const [id, r] of Object.entries(cloud)) {
+        const l = store.books[id];
+        if (!l || (r.updated || 0) >= (l.updated || 0)) store.books[id] = r;
+      }
+      for (const [id, l] of Object.entries(store.books)) {
+        const c = cloud[id];
+        if (!c || (l.updated || 0) > (c.updated || 0)) toPush.push(id);
+      }
+      // Ratings made in this browser before signing in move into the account.
+      const guest = guestData();
+      if (guest) {
+        let moved = 0;
+        for (const [id, g] of Object.entries(guest.books)) {
+          const l = store.books[id];
+          if (!l || (g.updated || 0) > (l.updated || 0)) { store.books[id] = g; toPush.push(id); moved++; }
+        }
+        try { localStorage.removeItem(KEY); } catch (e) {}
+        if (moved) toast(`Added ${plural(moved, 'book')} from this browser to your account`);
+      }
+      changed = true;
+    } else {
+      snap.docChanges().forEach(ch => {
+        const id = ch.doc.id;
+        if (ch.doc.metadata.hasPendingWrites || pending.has(id)) return;
+        if (ch.type === 'removed') { if (store.books[id]) { delete store.books[id]; changed = true; } return; }
+        const r = { ...ch.doc.data(), id: id }, l = store.books[id];
+        if (!l || (r.updated || 0) > (l.updated || 0)) { store.books[id] = r; changed = true; }
+      });
+    }
+    if (changed) { save(toPush); rerender(); }
+  }, err => {
+    console.error(err);
+    toast(err.code === 'permission-denied' ? 'Your account’s database rules are blocking access. Check the Firestore rules.' : 'Couldn’t reach your account. Your scores are kept on this device for now.');
+  });
+}
+
+async function signIn() {
+  if (!fb) { toast('Sign-in is still loading. Try again in a moment.'); return; }
+  const { au } = fb;
+  const provider = new au.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  try { await au.signInWithPopup(fb.auth, provider); }
+  catch (e) {
+    if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') return au.signInWithRedirect(fb.auth, provider);
+    authError(e);
+  }
+}
+function authError(e) {
+  if (!e || e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return;
+  console.error(e);
+  toast(e.code === 'auth/unauthorized-domain' ? 'Sign-in isn’t allowed on this web address yet. Add it under Authorized domains in Firebase.'
+    : e.code === 'auth/network-request-failed' ? 'Sign-in needs an internet connection.'
+    : 'Sign-in didn’t work. Try again.');
+}
+async function signOut() {
+  if (!fb || !user) return;
+  clearTimeout(pushT); await push();
+  const key = localKey();
+  await fb.au.signOut(fb.auth);
+  try { localStorage.removeItem(key); } catch (e) {}
+  toast('Signed out');
+}
+
+const GOOGLE_G = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+
+function renderAccount() {
+  const el = $('#account'), note = $('#storage-note');
+  if (!accountsOn || (authReady && !fb)) { el.innerHTML = ''; return; }
+  if (!authReady) { el.innerHTML = ''; return; }
+  if (!user) {
+    el.innerHTML = `<button type="button" class="btn signin" data-signin title="Sign in with Google">${GOOGLE_G}<span>Sign in</span></button>`;
+    note.textContent = 'Your ratings are stored in this browser until you sign in with Google. Signing in saves them to your account so they show up on any device.';
+    return;
+  }
+  const initial = esc((user.name || user.email || '?').trim()[0].toUpperCase());
+  el.innerHTML = `<div class="acct">
+    <button type="button" class="acct-btn" id="avatar" aria-haspopup="true" aria-expanded="false"><span id="acct-lvl"></span><span class="avatar">${user.photo ? `<img src="${esc(user.photo)}" alt="" referrerpolicy="no-referrer">` : initial}</span></button>
+    <div class="acct-menu" id="acct-menu" hidden><b class="who">${esc(user.name || 'Signed in')}</b><span class="email">${esc(user.email)}</span>
+      <a class="lvl-line" id="acct-lvl-line" href="#/mine"></a>
+      <a class="menu-item" href="#/mine">Your ratings</a>
+      ${myProfile ? `<a class="menu-item" href="${profileHref(myProfile.username)}">Your profile, @${esc(myProfile.username)}</a>` : myProfile === null ? `<a class="menu-item" href="#/mine">Pick a username so friends can find you</a>` : ''}
+      <button type="button" class="menu-item" data-install hidden>Install the app</button>
+      <button type="button" class="btn" id="signout">Sign out</button></div></div>`;
+  refreshLevelChip(); refreshInstall();
+  note.textContent = `Your ratings are saved to your Google account (${user.email}), so they show up wherever you sign in.`;
+  $('#avatar').onclick = e => { e.stopPropagation(); setMenu($('#acct-menu').hidden); };
+  $('#signout').onclick = () => { setMenu(false); signOut(); };
+}
+/* The level number beside the profile picture, and the level line in the account menu. */
+function refreshLevelChip() {
+  const chip = $('#acct-lvl'); if (!chip || !user) return;
+  const count = ratedCount(), { cur, next } = levelFor(count);
+  chip.innerHTML = cur ? levelMark(cur.n) : levelMark('0', 'off');
+  $('#avatar').setAttribute('aria-label', `Account menu for ${user.name || user.email}. ${cur ? `Level ${cur.n}, ${cur.name}` : 'No level yet'}.`);
+  $('#avatar').title = cur ? `Level ${cur.n}: ${cur.name}` : 'No level yet';
+  const line = $('#acct-lvl-line');
+  if (line) line.innerHTML = `${cur ? levelMark(cur.n) : levelMark('0', 'off')}<span class="lvl-text"><strong>${cur ? `Level ${cur.n}, ${esc(cur.name)}` : 'No level yet'}</strong><small>${next ? `${plural(next.at - count, 'more book')} to ${esc(next.name)}` : 'Top level reached'}</small></span>`;
+}
+function setMenu(open) {
+  const menu = $('#acct-menu'), btn = $('#avatar');
+  if (!menu) return;
+  menu.hidden = !open; btn.setAttribute('aria-expanded', open);
+}
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-signin]')) signIn();
+  if (!e.target.closest('.acct') || e.target.closest('.acct-menu a')) setMenu(false);
+});
+document.addEventListener('keydown', e => {
+  const menu = $('#acct-menu');
+  if (e.key === 'Escape' && menu && !menu.hidden) { setMenu(false); $('#avatar').focus(); }
+});
+
+
+
+/* Redraw whatever page is open after the ratings change from outside (sign-in, another device). */
+function rerender() {
+  refreshLevelChip();
+  const v = app.dataset.view;
+  if (v === 'mine') renderMine();
+  else if (v === 'book' && current) { const y = scrollY; drawBook(); scrollTo(0, y); }
+  else if (v === 'author' && authorPage) { const y = scrollY; drawAuthor(); scrollTo(0, y); }
+  else if (v === 'home') renderHome();
+}
+
+/* ---------- Open Library ---------- */
+const cache = new Map();
+function api(path) {
+  if (cache.has(path)) return cache.get(path);
+  const p = (async () => {
+    for (let i = 0; i < 3; i++) {
+      let r;
+      try { r = await fetch(API + path); }
+      catch (e) { if (i === 2) throw e; await new Promise(res => setTimeout(res, 500 * (i + 1))); continue; }
+      if (r.status === 429 || r.status === 503) { await new Promise(res => setTimeout(res, 1200 * (i + 1))); continue; }
+      if (r.status === 404) throw new Error('notfound');
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }
+    throw new Error('busy');
+  })();
+  cache.set(path, p);
+  p.catch(() => cache.delete(path));
+  return p;
+}
+const olid = k => String(k || '').split('/').pop();
+const WORK_RE = /^OL\d+W$/i, AUTHOR_RE = /^OL\d+A$/i;
+const coverUrl = (id, size = 'M') => id ? `${COVERS}/b/id/${id}-${size}.jpg` : '';
+
+/* Every list on the site (search, trending, subjects, an author's works) comes back in a slightly
+   different shape. normDoc turns any of them into one book object. */
+const seen = new Map(); // books seen in lists, so a book page can open instantly
+function normDoc(d) {
+  if (!d) return null;
+  const id = olid(d.key).toUpperCase();
+  if (!WORK_RE.test(id)) return null;
+  const authors = d.author_name || (d.authors || []).map(a => a && a.name).filter(Boolean);
+  const authorIds = d.author_key || (d.authors || []).map(a => a && olid(a.key)).filter(Boolean);
+  let cover = d.cover_i != null ? d.cover_i : d.cover_id != null ? d.cover_id : (d.covers || []).find(c => c > 0);
+  if (!(cover > 0)) cover = null;
+  const yr = d.first_publish_year || parseInt(d.first_publish_date, 10) || 0;
+  const b = { id, title: String(d.title || 'Untitled'), authors: authors || [], authorIds: authorIds || [], year: yr > 0 ? yr : 0, cover,
+    pages: d.number_of_pages_median || 0, editions: d.edition_count || 0, avg: d.ratings_average || 0, votes: d.ratings_count || 0 };
+  const old = seen.get(id);
+  // Keep any detail an earlier list already knew (pages, ratings) when this one lacks it.
+  if (old) for (const k of ['pages', 'editions', 'avg', 'votes', 'year']) if (!b[k] && old[k]) b[k] = old[k];
+  if (old && !b.cover && old.cover) b.cover = old.cover;
+  seen.set(id, b);
+  return b;
+}
+const normList = docs => (docs || []).map(normDoc).filter(Boolean);
+const byLine = b => (b.authors || []).join(', ');
+
+async function searchBooks(q, limit = 30) {
+  const r = await api(`/search.json?q=${encodeURIComponent(q)}&limit=${limit}&fields=${SEARCH_FIELDS}`);
+  return normList(r.docs);
+}
+async function booksByAuthor(authorId) {
+  const r = await api(`/search.json?q=${encodeURIComponent('author_key:' + authorId)}&limit=100&fields=${SEARCH_FIELDS}`);
+  return normList(r.docs);
+}
+/* Description fields are a string, or { type, value }, and often end with "-----" and source links. */
+function cleanDesc(d) {
+  let t = d && typeof d === 'object' ? d.value : d;
+  if (typeof t !== 'string') return '';
+  t = t.split(/\r?\n\s*-{3,}/)[0].replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/\r/g, '').replace(/[*_]{1,3}([^*_\n]+)[*_]{1,3}/g, '$1');
+  return t.trim();
+}
+/* One book's full details. The list data is shown straight away; this adds the description and subjects. */
+async function loadBook(id, hop = 0) {
+  const w = await api(`/works/${id}.json`);
+  if (w && w.type && w.type.key === '/type/redirect' && w.location && hop < 2) return loadBook(olid(w.location).toUpperCase(), hop + 1);
+  const known = seen.get(id);
+  // Pages, editions and Open Library's own rating only come from search, so ask for this one book.
+  let hit = null;
+  if (!known || !known.pages || !known.authors.length) {
+    try { const r = await api(`/search.json?q=${encodeURIComponent('key:"/works/' + id + '"')}&limit=1&fields=${SEARCH_FIELDS}`); hit = normDoc((r.docs || [])[0]); } catch (e) {}
+  }
+  const base = hit || known || {};
+  let authors = base.authors && base.authors.length ? base.authors : [], authorIds = base.authorIds || [];
+  if (!authors.length && Array.isArray(w.authors)) {
+    const ids = w.authors.map(a => a && a.author && olid(a.author.key)).filter(Boolean).slice(0, 3);
+    const got = await Promise.all(ids.map(a => api(`/authors/${a}.json`).catch(() => null)));
+    authors = got.filter(Boolean).map(a => a.name); authorIds = ids.filter((_, i) => got[i]);
+  }
+  const b = { id, title: w.title || base.title || 'Untitled', subtitle: w.subtitle || '', authors, authorIds,
+    year: base.year || parseInt(w.first_publish_date, 10) || 0,
+    cover: base.cover || (w.covers || []).find(c => c > 0) || null,
+    pages: base.pages || 0, editions: base.editions || 0, avg: base.avg || 0, votes: base.votes || 0,
+    description: cleanDesc(w.description), subjects: (w.subjects || []).filter(s => typeof s === 'string' && s.length < 40).slice(0, 10) };
+  seen.set(id, { ...b });
+  return b;
+}
+
+/* ---------- Helpers ---------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+const avgOf = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
+const one = v => (Math.round(v * 10) / 10).toFixed(1);
+const initials = n => esc(String(n || '?').split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase());
+const heat = v => ({ c: `color-mix(in srgb, var(--signal) ${Math.round(18 + v * 8.2)}%, var(--sunk))`, t: v >= 6 ? 'var(--signal-ink)' : 'var(--ink)' });
+function authorLinks(b) {
+  return (b.authors || []).map((n, i) => b.authorIds && b.authorIds[i] ? `<a class="by" href="#/author/${esc(b.authorIds[i])}">${esc(n)}</a>` : `<span>${esc(n)}</span>`).join(', ');
+}
+function toast(m, ms = 2000, action) {
+  const t = $('#toast'); t.textContent = m;
+  if (action) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'toast-act'; b.textContent = action.label;
+    b.onclick = () => { t.classList.remove('show'); action.run(); };
+    t.append(b);
+  }
+  t.classList.toggle('act', !!action); t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), ms); }
+function setTitle(t) { document.title = t ? `${t} | Tenpages` : 'Tenpages'; }
+function setNav(v) { document.body.dataset.view = v || 'other'; $$('[data-nav]').forEach(a => { const on = a.dataset.nav === v; a.classList.toggle('on', on); on ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'); }); app.dataset.view = v; }
+const skeletons = n => Array.from({ length: n }, () => `<div><div class="poster skel"></div><div class="skel skel-line" style="width:80%"></div><div class="skel skel-line" style="width:45%"></div></div>`).join('');
+function failBox(target, msg, retry) {
+  target.innerHTML = `<div class="empty">${esc(msg)}<br><button class="btn" type="button">Try again</button></div>`;
+  $('button', target).onclick = retry;
+}
+/* A cover, or the title's initials when Open Library has no picture. */
+const coverImg = (b, size = 'M', alt = '') => b.cover ? `<img src="${esc(coverUrl(b.cover, size))}" alt="${esc(alt)}" loading="lazy">` : `<div class="ph">${initials(b.title || b.name)}</div>`;
+
+
+/* ---------- Meter: the rating control (1–10) ---------- */
+const SCORE_WORDS = ['', 'Awful', 'Bad', 'Poor', 'Meh', 'Okay', 'Decent', 'Good', 'Great', 'Superb', 'Perfect'];
+function meter(value, onChange, opt = {}) {
+  const live = !!onChange;
+  const el = document.createElement('div');
+  el.className = 'meter ' + (opt.size || '') + (live ? ' live' : '');
+  el.innerHTML = `<div class="bars">${Array.from({ length: 10 }, (_, i) => `<i style="height:${28 + i * 8}%;--i:${i}"></i>`).join('')}${live ? '<span class="tip" aria-hidden="true"></span>' : ''}</div>`
+    + `<span class="meter-read"><span class="meter-val"></span>${live ? '<span class="meter-word" aria-hidden="true"></span>' : ''}</span>`
+    + (live ? `<button type="button" class="meter-clear" aria-label="Clear this score" title="Clear score"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>` : '');
+  const bars = $('.bars', el), val = $('.meter-val', el), word = $('.meter-word', el), tip = $('.tip', el), clr = $('.meter-clear', el), cells = $$('i', bars);
+  let cur = value || 0;
+  const paint = (v, preview) => {
+    cells.forEach((c, i) => { c.classList.toggle('f', i < v); c.classList.toggle('at', i === v - 1); });
+    el.classList.toggle('preview', !!preview);
+    if (v) { val.className = 'meter-val'; val.innerHTML = `${v}<small>/10</small>`; }
+    else { val.className = 'meter-val none'; val.textContent = live ? (opt.prompt || 'Rate') : 'Not rated'; }
+    if (word) word.textContent = v ? SCORE_WORDS[v] : '';
+  };
+  paint(cur);
+  if (!live) { el.setAttribute('role', 'img'); el.setAttribute('aria-label', cur ? `Rated ${cur} out of 10` : 'Not rated'); return el; }
+
+  bars.tabIndex = 0;
+  bars.setAttribute('role', 'slider');
+  bars.setAttribute('aria-label', opt.label || 'Your score');
+  bars.setAttribute('aria-valuemin', '0');
+  bars.setAttribute('aria-valuemax', '10');
+  const sync = () => {
+    bars.setAttribute('aria-valuenow', cur);
+    bars.setAttribute('aria-valuetext', cur ? `${cur} out of 10, ${SCORE_WORDS[cur]}` : 'Not rated');
+    el.classList.toggle('scored', !!cur);
+  };
+  sync();
+  /* The bar nearest the pointer, so the score always matches the bar you're on. */
+  const at = e => {
+    let best = 1, dist = Infinity;
+    cells.forEach((c, i) => { const r = c.getBoundingClientRect(), d = Math.abs(e.clientX - (r.left + r.width / 2)); if (d < dist) { dist = d; best = i + 1; } });
+    return best;
+  };
+  const showTip = v => {
+    if (!v) { tip.classList.remove('on'); return; }
+    const c = cells[v - 1];
+    tip.textContent = `${v} · ${SCORE_WORDS[v]}`;
+    tip.style.left = (c.offsetLeft + c.offsetWidth / 2) + 'px';
+    tip.classList.add('on');
+  };
+  /* src says how the score was given (pointer, digit, step, clear, undo), so callers can react. */
+  const set = (v, src) => {
+    cur = Math.min(10, Math.max(0, v)); paint(cur); sync();
+    el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse');
+    onChange(cur, src);
+  };
+  el.setScore = set;
+  /* Tap a bar to score, tap it again to clear, or slide across the bars. A bubble above
+     your finger shows the score, since your thumb hides the bars. */
+  let drag = null;
+  const endDrag = () => { if (drag) clearTimeout(drag.t); drag = null; showTip(0); };
+  bars.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    const v = at(e);
+    drag = { start: v, last: v, moved: false };
+    try { bars.setPointerCapture(e.pointerId); } catch (x) {}
+    paint(v, true);
+    // On touch, wait a moment so a page scroll that starts on the bars doesn't flash the bubble.
+    if (e.pointerType === 'touch') drag.t = setTimeout(() => drag && showTip(drag.last), 90); else showTip(v);
+  });
+  bars.addEventListener('pointermove', e => {
+    if (drag) {
+      const v = at(e);
+      if (v === drag.last) return;
+      drag.last = v; drag.moved = true; paint(v, true); showTip(v);
+      if (e.pointerType === 'touch' && navigator.vibrate) { try { navigator.vibrate(4); } catch (x) {} }
+    } else if (e.pointerType === 'mouse') paint(at(e), true);
+  });
+  bars.addEventListener('pointerup', e => {
+    if (!drag) return;
+    const v = at(e), d = drag; endDrag();
+    set(!d.moved && v === cur ? 0 : v, 'pointer');
+  });
+  bars.addEventListener('pointercancel', () => { endDrag(); paint(cur); });
+  bars.addEventListener('pointerleave', () => { if (!drag) paint(cur); });
+  clr.addEventListener('click', () => {
+    const prev = cur;
+    set(0, 'clear');
+    bars.focus({ preventScroll: true });
+    toast('Score cleared', 4500, { label: 'Undo', run: () => set(prev, 'undo') });
+  });
+  bars.addEventListener('keydown', e => {
+    const k = e.key;
+    if (k === 'ArrowRight' || k === 'ArrowUp') set(cur + 1, 'step');
+    else if (k === 'ArrowLeft' || k === 'ArrowDown') set(cur - 1, 'step');
+    else if (k === 'Home') set(1, 'step');
+    else if (k === 'End') set(10, 'step');
+    else if (k === 'Delete' || k === 'Backspace') set(0, 'clear');
+    else if (/^[0-9]$/.test(k)) set(k === '0' ? 10 : +k, 'digit');
+    else return;
+    e.preventDefault();
+  });
+  return el;
+}
+
+
+/* ---------- Cards ---------- */
+function card(b) {
+  const mine = store.books[b.id];
+  const sub = [(b.authors || [])[0], b.year || ''].filter(Boolean).join(', ');
+  return `<a class="card" href="#/book/${b.id}">
+    <div class="poster">${coverImg(b, 'M')}${mine && mine.rating ? `<span class="score-tag" aria-label="Your score ${mine.rating}">${mine.rating}</span>` : ''}</div>
+    <h3>${esc(b.title)}</h3>${sub ? `<p>${esc(sub)}</p>` : ''}</a>`;
+}
+function shelfCard(r) {
+  return `<a class="card" href="#/book/${r.id}">
+    <div class="poster">${coverImg(r, 'M')}${r.rating ? `<span class="score-tag">${r.rating}</span>` : ''}</div>
+    <h3>${esc(r.title)}</h3><p>${esc(r.author || '')}</p></a>`;
+}
+
+/* ---------- Router ---------- */
+let renderId = 0;
+let current = null;      // the book page that's open: { book }
+let authorPage = null;   // the author page that's open: { author, books }
+/* Profile pages live at /@username (and /@username/book/ID); everything else uses #/ routes.
+   On Vercel, vercel.json sends /@… addresses to this same index.html. */
+const onHttp = location.protocol.startsWith('http');
+const atProfilePath = () => onHttp && location.pathname.startsWith('/@');
+const profilePath = (name, rest = '') => `/@${name}${rest}`;
+const profileUrl = (name, rest = '') => location.origin + profilePath(name, rest);
+const atRoot = () => !onHttp || location.pathname === '/';
+/* Navigate to a #/ route or a /@ path, keeping the address bar clean. */
+function go(href) {
+  if (href.startsWith('/@')) {
+    if (!onHttp) { location.hash = '#/u/' + href.slice(2); return; }
+    history.pushState(null, '', href); route(); return;
+  }
+  if (!atRoot()) { history.pushState(null, '', '/' + href); route(); return; }
+  location.hash = href;
+}
+document.addEventListener('click', e => {
+  if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  const a = e.target.closest('a[href]');
+  if (!a || a.target) return;
+  const href = a.getAttribute('href');
+  if (href.startsWith('/@') || (href.startsWith('#') && !atRoot())) { e.preventDefault(); go(href); }
+});
+let lastRoute = null;
+function route() {
+  const key = location.pathname + location.hash;
+  if (key === lastRoute) return;
+  lastRoute = key;
+  closeSug(); setMenu(false); document.body.classList.remove('search-open');
+  let parts;
+  if (atProfilePath()) parts = ['u', ...decodeURIComponent(location.pathname.slice(2)).split('/').filter(Boolean)];
+  else {
+    parts = (location.hash.slice(1) || '/').split('/').filter(Boolean);
+    // Old #/u/name links move to the /@name address.
+    if (parts[0] === 'u' && parts[1] && onHttp) { history.replaceState(null, '', '/@' + parts.slice(1).join('/')); lastRoute = location.pathname + location.hash; }
+  }
+  if (parts[0] === 'book' && WORK_RE.test(parts[1] || '')) {
+    const bid = parts[1].toUpperCase();
+    if (current && current.book.id === bid && app.dataset.view === 'book') return;
+    window.scrollTo(0, 0); renderBook(bid);
+  } else if (parts[0] === 'author' && AUTHOR_RE.test(parts[1] || '')) { window.scrollTo(0, 0); renderAuthor(parts[1].toUpperCase()); }
+  else if (parts[0] === 'search') { window.scrollTo(0, 0); renderSearch(decodeURIComponent(parts.slice(1).join('/'))); }
+  else if (parts[0] === 'mine') { window.scrollTo(0, 0); renderMine(); }
+  else if (parts[0] === 'people') { window.scrollTo(0, 0); renderPeople(decodeURIComponent(parts[1] || '')); }
+  else if (parts[0] === 'u' && parts[1]) {
+    window.scrollTo(0, 0);
+    const name = decodeURIComponent(parts[1]);
+    if (parts[2] === 'book' && WORK_RE.test(parts[3] || '')) renderTheirBook(name, parts[3].toUpperCase());
+    else renderProfile(name);
+  }
+  else { window.scrollTo(0, 0); renderHome(); }
+}
+window.addEventListener('hashchange', route);
+window.addEventListener('popstate', route);
+
+/* ---------- Home ---------- */
+/* [label, Open Library subject]. The first tab is what's trending. Edit this list to change the tabs. */
+const GENRES = [['Popular', null], ['Fiction', 'fiction'], ['Fantasy', 'fantasy'], ['Science fiction', 'science_fiction'], ['Mystery', 'mystery_and_detective_stories'],
+  ['Romance', 'romance'], ['Thriller', 'thriller'], ['Horror', 'horror'], ['Biography', 'biography'], ['History', 'history'], ['Science', 'science'], ['Self-help', 'self-help']];
+const lists = {};
+async function loadList(slug) {
+  const k = slug || '_trending';
+  if (lists[k]) return lists[k];
+  // These lists barely change, so keep a trimmed copy on this device for a day.
+  const saved = readJSON('tenpages.list.' + k);
+  if (saved && Array.isArray(saved.list) && saved.list.length && Date.now() - saved.t < 864e5) {
+    saved.list.forEach(b => { if (!seen.has(b.id)) seen.set(b.id, b); });
+    return (lists[k] = saved.list);
+  }
+  let list;
+  if (!slug) {
+    let r;
+    try { r = await api('/trending/yearly.json?limit=60'); } catch (e) { r = await api('/trending/forever.json?limit=60'); }
+    list = normList(r.works || r.docs);
+  } else {
+    const r = await api(`/subjects/${slug}.json?limit=40`);
+    list = normList(r.works);
+  }
+  list = list.filter(b => b.cover).slice(0, 48);
+  if (!list.length) throw new Error('empty');
+  lists[k] = list;
+  writeJSON('tenpages.list.' + k, { t: Date.now(), list });
+  return list;
+}
+async function renderHome() {
+  const id = ++renderId; current = null; authorPage = null; setNav('home'); setTitle();
+  const mine = Object.values(store.books).sort((a, b) => b.updated - a.updated);
+  app.innerHTML = `
+  <div class="wrap" style="padding-bottom:72px">
+    <section class="intro">
+      <div>
+        <h1>Keep score of every book you read.</h1>
+        <p>Search for a book and give it a score out of 10. Your shelf shows which ones you loved, and friends can see it too.</p>
+        <form id="intro-form" role="search"><label class="sr" for="intro-q">Search books</label><input id="intro-q" type="search" placeholder="Dune, Piranesi, Kafka on the Shore…" enterkeyhint="search"><button class="btn primary">Search</button></form>
+        <p class="install-hint" data-install-hint hidden>${BURST_SVG}<span>Get Tenpages on your home screen.</span><button type="button" class="linkish" data-install>Install</button><button type="button" class="hint-x" data-install-dismiss aria-label="Hide this">×</button></p>
+      </div>
+      <div class="stack" id="stack" aria-hidden="true"></div>
+    </section>
+    ${mine.length ? `<section class="sec"><div class="sec-head"><h2>Pick up where you left off</h2><a class="link" href="#/mine">See all your ratings</a></div><div class="shelf">${mine.slice(0, 14).map(shelfCard).join('')}</div></section>` : ''}
+    <section class="sec"><div class="sec-head"><h2>Popular books</h2><div class="filters" id="filters" role="group" aria-label="Browse by genre"></div></div>
+      <p class="sec-tools"><button type="button" class="btn" id="home-qr" hidden>${qrIcon}Quick rate these</button></p>
+      <div class="grid" id="pop">${skeletons(14)}</div></section>
+  </div>`;
+  refreshInstall();
+  $('#intro-form').onsubmit = e => { e.preventDefault(); const q = $('#intro-q').value.trim(); if (q) go('#/search/' + encodeURIComponent(q)); };
+  const f = $('#filters');
+  f.innerHTML = GENRES.map(([label], i) => `<button type="button" class="${i ? '' : 'on'}" aria-pressed="${!i}" data-i="${i}">${esc(label)}</button>`).join('');
+  let shown = [];
+  const draw = async i => {
+    const my = ++drawSeq;
+    $('#pop').innerHTML = skeletons(14);
+    try {
+      const list = await loadList(GENRES[i][1]);
+      if (id !== renderId || my !== drawSeq) return;
+      shown = list.slice(0, 36);
+      $('#pop').innerHTML = shown.map(card).join('');
+      const qb = $('#home-qr'); if (qb) { qb.hidden = false; qb.onclick = () => openQuickRate(`${GENRES[i][0]} books`, shown); }
+      if (!i) heroStack(list);
+    } catch (e) {
+      if (id !== renderId || my !== drawSeq) return;
+      const qb = $('#home-qr'); if (qb) qb.hidden = true;
+      failBox($('#pop'), 'This list didn’t load. Check your internet connection.', () => draw(i));
+    }
+  };
+  let drawSeq = 0;
+  f.onclick = e => { const b = e.target.closest('button'); if (!b) return; $$('button', f).forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', x === b); }); draw(+b.dataset.i); };
+  draw(0);
+}
+function heroStack(list) {
+  const stack = $('#stack'); if (!stack || stack.children.length) return;
+  stack.innerHTML = list.slice(0, 3).map(b => `<a href="#/book/${b.id}" tabindex="-1"><img src="${esc(coverUrl(b.cover, 'L'))}" alt="" decoding="async" loading="lazy"></a>`).join('');
+  requestAnimationFrame(() => requestAnimationFrame(() => stack.classList.add('fan')));
+}
+
+/* ---------- Search ---------- */
+async function renderSearch(q) {
+  const id = ++renderId; current = null; authorPage = null; setNav('search'); setTitle(`Search: ${q}`);
+  $('#q').value = q;
+  app.innerHTML = `<section class="wrap page"><div class="sec-head"><h2>Results for “${esc(q)}”</h2></div><p class="sec-tools"><button type="button" class="btn" id="res-qr" hidden>${qrIcon}Quick rate these</button></p><div class="grid" id="res">${skeletons(10)}</div></section>`;
+  try {
+    const r = await searchBooks(q, 36);
+    if (id !== renderId) return;
+    const list = r.filter(b => b.title);
+    $('#res').innerHTML = list.length ? list.map(card).join('') : `<div class="empty">No books match “${esc(q)}”. Check the spelling, or try the author’s name with the title.</div>`;
+    const qb = $('#res-qr');
+    if (qb && list.length) { qb.hidden = false; qb.onclick = () => openQuickRate(`Results for “${q}”`, list); }
+  } catch (e) {
+    if (id !== renderId) return;
+    failBox($('#res'), 'Search didn’t go through. Check your internet connection.', () => renderSearch(q));
+  }
+}
+
+/* ---------- Header suggestions ---------- */
+const qIn = $('#q'), sug = $('#suggest');
+let sugT, sugIdx = -1;
+function closeSug() { sug.classList.remove('open'); sugIdx = -1; }
+qIn.addEventListener('input', () => {
+  clearTimeout(sugT);
+  const q = qIn.value.trim();
+  if (q.length < 2) { closeSug(); return; }
+  sugT = setTimeout(async () => {
+    try {
+      const [r, people] = await Promise.all([
+        searchBooks(q, 6).catch(() => []),
+        fb ? searchPeople(q, 3).catch(() => []) : []
+      ]);
+      if (qIn.value.trim() !== q) return;
+      if (!r.length && !people.length) { closeSug(); return; }
+      sug.innerHTML = r.slice(0, people.length ? 5 : 6).map(b => `<a href="#/book/${b.id}">${b.cover ? `<img src="${esc(coverUrl(b.cover, 'S'))}" alt="">` : `<div class="ph"></div>`}<div><b>${esc(b.title)}</b><small>${esc([(b.authors || [])[0], b.year || ''].filter(Boolean).join(', '))}</small></div></a>`).join('')
+        + (people.length ? `<div class="group">People</div>` + people.map(pp => `<a class="person" href="${profileHref(pp.username)}">${avatarHTML(pp, 'sm')}<div><b>${esc(pp.name || pp.username)}</b><small>@${esc(pp.username)}</small></div></a>`).join('') : '')
+        + `<a class="all" href="#/search/${encodeURIComponent(q)}">Show all book results for “${esc(q)}”</a>`;
+      sug.classList.add('open'); sugIdx = -1;
+    } catch (e) {}
+  }, 260);
+});
+qIn.addEventListener('keydown', e => {
+  const links = $$('a', sug);
+  if (!sug.classList.contains('open') || !links.length) return;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    sugIdx = (sugIdx + (e.key === 'ArrowDown' ? 1 : -1) + links.length) % links.length;
+    links.forEach((a, i) => a.classList.toggle('active', i === sugIdx));
+  } else if (e.key === 'Escape') closeSug();
+});
+$('#search-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const links = $$('a', sug);
+  if (sugIdx >= 0 && links[sugIdx]) go(links[sugIdx].getAttribute('href'));
+  else { const q = qIn.value.trim(); if (q) go('#/search/' + encodeURIComponent(q)); }
+  closeSug(); qIn.blur();
+});
+document.addEventListener('click', e => { if (!e.target.closest('.search')) closeSug(); });
+sug.addEventListener('click', () => { closeSug(); qIn.value = ''; });
+/* Phone tab bar: Search jumps to the home page's search box, or opens the header search. */
+$('#tab-search').addEventListener('click', () => {
+  const intro = $('#intro-q');
+  if (app.dataset.view === 'home' && intro) { intro.scrollIntoView({ block: 'center' }); intro.focus(); return; }
+  document.body.classList.add('search-open');
+  window.scrollTo(0, 0); qIn.focus();
+});
+qIn.addEventListener('blur', () => { setTimeout(() => { if (!qIn.value.trim() && document.activeElement !== qIn && !sug.classList.contains('open')) document.body.classList.remove('search-open'); }, 150); });
+
+
+
+/* ---------- Book page ---------- */
+const recToBook = r => ({ id: r.id, title: r.title || 'Untitled', authors: r.author ? [r.author] : [], authorIds: [], year: r.year || 0, cover: r.cover || null, pages: r.pages || 0, editions: 0, avg: 0, votes: 0 });
+async function renderBook(id) {
+  const rid = ++renderId; current = null; authorPage = null; setNav('book');
+  // Anything already known (from a list you came from, or your own ratings) is shown at once.
+  const early = seen.get(id) || (store.books[id] && recToBook(store.books[id]));
+  if (early) { current = { book: early }; drawBook(); }
+  else app.innerHTML = `<div class="wrap page"><div class="show-head"><div class="show-poster skel"></div><div class="show-title"><div class="skel skel-line" style="height:48px;width:60%"></div><div class="skel skel-line" style="width:35%"></div></div></div></div>`;
+  let d;
+  try { d = await loadBook(id); }
+  catch (e) {
+    if (rid !== renderId || early) return; // the basics are already on screen
+    app.innerHTML = `<div class="wrap page"><div id="err"></div></div>`;
+    if (e.message === 'notfound') $('#err').innerHTML = `<div class="empty">This book isn’t in the database. <br><a class="btn" href="#/">Browse books</a></div>`;
+    else failBox($('#err'), 'This book didn’t load. Check your internet connection.', () => renderBook(id));
+    return;
+  }
+  if (rid !== renderId) return;
+  const first = !early;
+  current = { book: d };
+  if (first) drawBook(); else fillBook();
+  loadMore(d, rid);
+}
+function drawBook() {
+  const b = current.book, rec = store.books[b.id];
+  setTitle(b.title);
+  app.innerHTML = `
+  <div class="wrap page">
+    <section class="show-head">
+      <div class="show-poster">${b.cover ? `<img src="${esc(coverUrl(b.cover, 'L'))}" alt="Cover of ${esc(b.title)}">` : `<div class="ph">${initials(b.title)}</div>`}</div>
+      <div class="show-title">
+        <h1 id="bk-title"></h1>
+        <div class="show-sub" id="bk-sub"></div>
+      </div>
+      <div class="show-body">
+        <dl class="facts" id="bk-facts"></dl>
+        <div class="my-score"><h2>Your score</h2><div id="book-meter"></div>
+          <p id="bk-note"></p>
+          <div class="share-row">${user ? `<button type="button" class="btn" id="share-mine">Share your score</button>` : ''}<a class="btn quiet" href="https://openlibrary.org/works/${esc(b.id)}" target="_blank" rel="noopener">View on Open Library</a></div></div>
+        <div id="bk-desc"></div>
+        <p class="tags" id="bk-tags"></p>
+      </div>
+    </section>
+    <section class="sec" id="bk-more" hidden></section>
+  </div>`;
+  $('#book-meter').append(meter(rec && rec.rating, v => {
+    setRating(current.book, v);
+    toast(v ? `Scored ${current.book.title} ${v}/10` : 'Score removed');
+    fillNote();
+  }, { size: 'lg', label: `Your score for ${b.title}`, prompt: 'Tap a bar to score' }));
+  const shareBtn = $('#share-mine');
+  if (shareBtn) shareBtn.onclick = () => {
+    const bk = current.book;
+    if (myProfile && myProfile.public) share(profileUrl(myProfile.username, `/book/${bk.id}`), `${myProfile.name || myProfile.username}'s score for ${bk.title}`);
+    else if (myProfile) toast('Your profile is private. Turn on sharing on Your ratings first.');
+    else { toast('Pick a username first, then you can share.'); go('#/mine'); }
+  };
+  fillBook();
+}
+/* The parts of the page that fill in as more details arrive. */
+function fillBook() {
+  const b = current.book;
+  if (!$('#bk-title')) return;
+  setTitle(b.title);
+  $('#bk-title').textContent = b.title + (b.subtitle ? `: ${b.subtitle}` : '');
+  const sub = [];
+  if (b.authors.length) sub.push(`<span>by ${authorLinks(b)}</span>`);
+  if (b.year) sub.push(`<span>${b.year}</span>`);
+  if (b.subjects && b.subjects[0]) sub.push(`<span>${esc(b.subjects[0])}</span>`);
+  $('#bk-sub').innerHTML = sub.join('');
+  const facts = [b.pages && ['Pages', b.pages.toLocaleString('en')], b.year && ['First published', b.year], b.editions && ['Editions', b.editions.toLocaleString('en')],
+    b.votes >= 3 && b.avg && ['Open Library', `${one(b.avg)}<small>/5</small>`]].filter(Boolean);
+  $('#bk-facts').innerHTML = facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${typeof v === 'number' ? esc(v) : v}</dd></div>`).join('');
+  const box = $('#bk-desc');
+  if (b.description) {
+    box.innerHTML = `<div class="blurb" id="blurb">${b.description.split(/\n{2,}/).map(p => `<p>${esc(p.trim())}</p>`).join('')}</div>`;
+    const bl = $('#blurb');
+    requestAnimationFrame(() => {
+      if (bl.scrollHeight <= bl.clientHeight + 2) return;
+      bl.classList.add('clamped');
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'more'; btn.textContent = 'Read more';
+      btn.onclick = () => { const o = bl.classList.toggle('open'); btn.textContent = o ? 'Show less' : 'Read more'; };
+      bl.after(btn);
+    });
+  } else box.innerHTML = '';
+  $('#bk-tags').innerHTML = (b.subjects || []).slice(1, 8).map(s => `<a href="#/search/${encodeURIComponent('subject:"' + s + '"')}">${esc(s)}</a>`).join('');
+  fillNote();
+}
+function fillNote() {
+  const n = $('#bk-note'); if (!n || !current) return;
+  const rec = store.books[current.book.id];
+  n.textContent = rec && rec.rating ? 'Tap the same bar again to clear your score.' : 'Tap a bar to give it a score out of 10. You can slide across the bars too.';
+}
+/* "More by this author", shown under the book once their other books have loaded. */
+async function loadMore(b, rid) {
+  const aid = b.authorIds && b.authorIds[0];
+  if (!aid) return;
+  try {
+    const list = (await booksByAuthor(aid)).filter(x => x.id !== b.id && x.cover).sort((x, y) => (y.editions || 0) - (x.editions || 0)).slice(0, 12);
+    if (rid !== renderId || !list.length) return;
+    const box = $('#bk-more'); if (!box) return;
+    box.hidden = false;
+    box.innerHTML = `<div class="sec-head"><h2>More by ${esc(b.authors[0])}</h2><a class="link" href="#/author/${esc(aid)}">See all their books</a></div><div class="shelf">${list.map(card).join('')}</div>`;
+  } catch (e) { /* optional section: leave it out */ }
+}
+
+/* ---------- Author page ---------- */
+async function renderAuthor(aid) {
+  const rid = ++renderId; current = null; authorPage = null; setNav('author');
+  app.innerHTML = `<section class="wrap page"><div class="skel skel-line" style="height:46px;width:40%"></div><div class="skel skel-line" style="width:25%"></div><div class="skel skel-line" style="height:90px;margin-top:28px"></div></section>`;
+  let a, books;
+  try { [a, books] = await Promise.all([api(`/authors/${aid}.json`), booksByAuthor(aid).catch(() => [])]); }
+  catch (e) {
+    if (rid !== renderId) return;
+    app.innerHTML = `<div class="wrap page"><div id="err"></div></div>`;
+    if (e.message === 'notfound') $('#err').innerHTML = `<div class="empty">This author isn’t in the database. <br><a class="btn" href="#/">Browse books</a></div>`;
+    else failBox($('#err'), 'This author didn’t load. Check your internet connection.', () => renderAuthor(aid));
+    return;
+  }
+  if (rid !== renderId) return;
+  const bio = cleanDesc(a.bio);
+  authorPage = { author: { id: aid, name: a.name || 'Unknown author', bio, born: a.birth_date || '', died: a.death_date || '' }, books: books.filter(b => b.title), sort: 'old' };
+  drawAuthor();
+}
+function drawAuthor() {
+  const { author: a, books } = authorPage;
+  setTitle(a.name);
+  const life = [a.born, a.died].filter(Boolean).join(' – ');
+  app.innerHTML = `
+  <section class="wrap page">
+    <div class="page-head"><div><h1>${esc(a.name)}</h1>${life ? `<p class="handle" style="margin:6px 0 0;color:var(--ink-2)">${esc(life)}</p>` : ''}</div>
+      <div class="tools">${books.length ? `<label class="sr" for="asort">Sort by</label><select class="btn" id="asort"><option value="old"${authorPage.sort === 'old' ? ' selected' : ''}>Oldest first</option><option value="pop"${authorPage.sort === 'pop' ? ' selected' : ''}>Most editions</option><option value="mine"${authorPage.sort === 'mine' ? ' selected' : ''}>Your score</option></select>
+        <button type="button" class="btn primary" id="auth-qr">${qrIcon}Quick rate</button>` : ''}</div></div>
+    ${a.bio ? `<div class="blurb author-bio" id="abio">${a.bio.split(/\n{2,}/).slice(0, 3).map(p => `<p>${esc(p.trim())}</p>`).join('')}</div>` : ''}
+    <p class="recap" id="auth-recap" style="margin-top:20px"></p>
+    ${books.length ? `<ul class="mine bks" id="auth-list"></ul>` : `<div class="empty">No books are listed for this author yet.</div>`}
+  </section>`;
+  const bl = $('#abio');
+  if (bl) requestAnimationFrame(() => {
+    if (bl.scrollHeight <= bl.clientHeight + 2) return;
+    bl.classList.add('clamped');
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'more'; btn.textContent = 'Read more';
+    btn.onclick = () => { const o = bl.classList.toggle('open'); btn.textContent = o ? 'Show less' : 'Read more'; };
+    bl.after(btn);
+  });
+  const qb = $('#auth-qr'); if (qb) qb.onclick = () => openQuickRate(`Books by ${a.name}`, sortedAuthorBooks());
+  const sel = $('#asort'); if (sel) sel.onchange = () => { authorPage.sort = sel.value; drawAuthor(); };
+  const box = $('#auth-list');
+  if (box) {
+    const rows = sortedAuthorBooks();
+    box.innerHTML = rows.map(b => `<li data-id="${b.id}">
+      <a href="#/book/${b.id}" class="poster" tabindex="-1">${coverImg(b, 'S')}</a>
+      <div><h3><a href="#/book/${b.id}">${esc(b.title)}</a></h3>
+        <p class="sub">${esc([b.year || '', b.pages ? plural(b.pages, 'page') : ''].filter(Boolean).join(', '))}</p>
+        <div class="slot"></div></div></li>`).join('');
+    rows.forEach(b => {
+      const slot = $(`li[data-id="${b.id}"] .slot`, box);
+      slot.append(meter((store.books[b.id] || {}).rating, v => { setRating(b, v); refreshAuthorRecap(); }, { label: `Your score for ${b.title}` }));
+    });
+  }
+  refreshAuthorRecap();
+}
+function sortedAuthorBooks() {
+  const { books, sort } = authorPage;
+  const rate = b => (store.books[b.id] || {}).rating || 0;
+  return books.slice().sort(sort === 'pop' ? (x, y) => (y.editions || 0) - (x.editions || 0)
+    : sort === 'mine' ? (x, y) => rate(y) - rate(x) || (x.year || 9999) - (y.year || 9999)
+    : (x, y) => (x.year || 9999) - (y.year || 9999));
+}
+function refreshAuthorRecap() {
+  const box = $('#auth-recap'); if (!box || !authorPage) return;
+  const { books } = authorPage;
+  const rated = books.filter(b => store.books[b.id] && store.books[b.id].rating);
+  box.innerHTML = !books.length ? '' : rated.length
+    ? `You’ve scored <strong>${rated.length} of ${plural(books.length, 'book')}</strong> by ${esc(authorPage.author.name)}, averaging <strong>${one(avgOf(rated.map(b => store.books[b.id].rating)))}</strong>.`
+    : `${plural(books.length, 'book')} listed. Tap the bars beside a book to score it.`;
+}
+
+
+
+/* ---------- Levels: based on how many books someone has rated ----------
+   To add or change a level, edit this list (keep it in order). */
+const LEVELS = [
+  { n: 1, name: 'Page Turner', at: 3 },
+  { n: 2, name: 'Regular', at: 10 },
+  { n: 3, name: 'Bookworm', at: 25 },
+  { n: 4, name: 'Critic', at: 50 },
+  { n: 5, name: 'Librarian', at: 100 }
+];
+const BURST_D = 'M16.00 1.00 L19.52 5.16 L24.82 3.86 L25.22 9.30 L30.27 11.36 L27.40 16.00 L30.27 20.64 L25.22 22.70 L24.82 28.14 L19.52 26.84 L16.00 31.00 L12.48 26.84 L7.18 28.14 L6.78 22.70 L1.73 20.64 L4.60 16.00 L1.73 11.36 L6.78 9.30 L7.18 3.86 L12.48 5.16Z';
+function levelFor(count) {
+  let cur = null;
+  for (const l of LEVELS) if (count >= l.at) cur = l;
+  return { cur, next: LEVELS.find(l => count < l.at) || null, count };
+}
+const isRated = id => !!(store.books[id] && store.books[id].rating);
+const ratedCount = st => Object.values((st || store).books).filter(r => r && r.rating).length;
+const levelMark = (n, cls = '') => `<span class="lvl-mark ${cls}" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="${BURST_D}"></path></svg><span class="n">${n}</span></span>`;
+/* A small pill, e.g. "3 Bookworm". Empty until someone reaches level 1. */
+function levelBadge(count) {
+  const { cur } = levelFor(count || 0);
+  if (!cur) return '';
+  return `<span class="lvl" title="Level ${cur.n} of ${LEVELS.length}: ${cur.name}, ${cur.at}+ books rated">${levelMark(cur.n)}<span><span class="sr">Level ${cur.n}, </span>${cur.name}</span></span>`;
+}
+/* Animate the badge once on Your ratings right after a level-up. */
+function justLeveled() {
+  try { const v = sessionStorage.getItem('tenpages.levelup'); sessionStorage.removeItem('tenpages.levelup'); return !!v; } catch (e) { return false; }
+}
+function levelCardHTML(count, pop) {
+  const { cur, next } = levelFor(count);
+  const from = cur ? cur.at : 0;
+  const pct = next ? Math.max(0, Math.min(100, (count - from) / (next.at - from) * 100)) : 100;
+  const left = next ? next.at - count : 0;
+  return `
+    <div class="level-top">${cur ? levelMark(cur.n, 'lg' + (pop ? ' pop' : '')) : levelMark('0', 'lg off')}
+      <div><h2>${cur ? esc(cur.name) : 'No level yet'}</h2>
+        <p>${cur ? `Level ${cur.n} of ${LEVELS.length}. ` : ''}${plural(count, 'book')} rated.</p></div></div>
+    <div class="track" role="progressbar" aria-label="Progress to the next level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}"><span style="width:${pct}%"></span></div>
+    <p class="next">${next ? `Rate ${plural(left, 'more book')} to reach ${esc(next.name)}.` : 'You’ve reached the top level.'}</p>
+    <ol class="ladder">${LEVELS.map(l => `<li class="${count >= l.at ? 'got' : ''}${cur && cur.n === l.n ? ' now' : ''}">${levelMark(l.n, count >= l.at ? '' : 'off')}<strong>${esc(l.name)}</strong><span>${l.at} books</span></li>`).join('')}</ol>`;
+}
+
+/* ---------- Ratings ---------- */
+function ensureRec(b) {
+  let r = store.books[b.id];
+  if (!r) r = store.books[b.id] = { id: b.id, rating: 0, updated: Date.now() };
+  Object.assign(r, { title: b.title, author: byLine(b), cover: b.cover || null, year: b.year || 0, pages: b.pages || 0 });
+  return r;
+}
+/* Score a book 1–10, or pass 0 to clear it. */
+function setRating(b, v) {
+  const before = levelFor(ratedCount()).cur;
+  const r = ensureRec(b);
+  r.rating = v; r.updated = Date.now();
+  if (!v) delete store.books[b.id];
+  save([b.id]);
+  const after = levelFor(ratedCount()).cur;
+  if (after && (!before || after.n > before.n)) {
+    toast(`Level up! You’re now level ${after.n}, ${after.name}.`, 3600);
+    try { sessionStorage.setItem('tenpages.levelup', String(after.n)); } catch (e) {}
+  }
+}
+/* Keep the score badges on any covers on screen in step with your ratings. */
+function refreshScoreTags() {
+  $$('a.card[href^="#/book/"]').forEach(a => {
+    const id = a.getAttribute('href').slice(7).toUpperCase(), p = $('.poster', a);
+    if (!p) return;
+    const rec = store.books[id];
+    let tag = $('.score-tag', p);
+    if (rec && rec.rating) { if (!tag) { tag = document.createElement('span'); tag.className = 'score-tag'; p.append(tag); } tag.textContent = rec.rating; }
+    else if (tag) tag.remove();
+  });
+}
+
+/* ---------- Quick rate: one book at a time, full screen ----------
+   Works on any list of books: a genre on the home page, search results, or an author's books. */
+const qrIcon = '<svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 3.5v9l5.5-4.5zM8.5 3.5v9l5.5-4.5z" fill="currentColor"/></svg>';
+let qr = null;
+function openQuickRate(title, books) {
+  const list = (books || []).filter(b => b && b.id);
+  if (qr || !list.length) return;
+  const first = list.findIndex(b => !isRated(b.id));
+  qr = { title, list, i: Math.max(0, first), rated: new Set(), timer: null, scrollY: window.scrollY, view: app.dataset.view };
+  const root = document.createElement('div');
+  root.className = 'qr';
+  root.innerHTML = `
+    <div class="qr-box" role="dialog" aria-modal="true" aria-label="Quick rate: ${esc(title)}">
+      <div class="qr-top">
+        <button type="button" class="qr-x" aria-label="Close quick rate"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+        <div class="qr-title"><b>${esc(title)}</b><span class="qr-count"></span></div>
+      </div>
+      <div class="qr-prog" aria-hidden="true"><span></span></div>
+      <div class="qr-stage"></div>
+      <div class="qr-foot">
+        <button type="button" class="btn quiet" data-qr="back">Back</button>
+        <button type="button" class="btn" data-qr="next">Haven’t read it</button>
+      </div>
+    </div>`;
+  document.body.append(root);
+  document.body.classList.add('qr-open');
+  qr.root = root;
+  try { history.pushState({ qr: 1 }, '', location.href); qr.pushed = true; } catch (e) {}
+  $('.qr-x', root).onclick = () => closeQuickRate();
+  root.addEventListener('click', e => { if (e.target === root) closeQuickRate(); });
+  $('[data-qr="back"]', root).onclick = () => qrGo(qr.i - 1, -1);
+  $('[data-qr="next"]', root).onclick = () => qrGo(qr.i + 1, 1);
+  root.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { e.preventDefault(); closeQuickRate(); return; }
+    const onBars = e.target.classList && e.target.classList.contains('bars');
+    if (onBars) return; // the bars handle their own keys
+    if (/^[0-9]$/.test(e.key) && qr.meter) { e.preventDefault(); qr.meter.setScore(e.key === '0' ? 10 : +e.key, 'digit'); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); qrGo(qr.i + 1, 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); qrGo(qr.i - 1, -1); }
+  });
+  qrDraw(0);
+}
+function qrGo(i, dir) {
+  if (!qr) return;
+  clearTimeout(qr.timer);
+  if (i < 0) return;
+  qr.i = i;
+  qrDraw(dir);
+}
+function qrDraw(dir) {
+  const { list, root } = qr;
+  const stage = $('.qr-stage', root), total = list.length, done = list.filter(b => isRated(b.id)).length;
+  $('.qr-prog span', root).style.width = (done / total * 100) + '%';
+  $('[data-qr="back"]', root).disabled = qr.i === 0;
+  if (qr.i >= total) return qrFinish();
+  const b = list[qr.i];
+  $('.qr-count', root).textContent = `${done} of ${total} scored`;
+  const nextBtn = $('[data-qr="next"]', root);
+  nextBtn.style.display = '';
+  nextBtn.textContent = isRated(b.id) ? 'Next' : 'Haven’t read it';
+  const meta = [b.pages ? plural(b.pages, 'page') : '', b.editions > 1 ? plural(b.editions, 'edition') : ''].filter(Boolean).join(' · ');
+  stage.innerHTML = `<article class="qr-card ${dir > 0 ? 'in-next' : dir < 0 ? 'in-back' : ''}">
+    <div class="qr-cover">${b.cover ? `<img src="${esc(coverUrl(b.cover, 'L'))}" alt="Cover of ${esc(b.title)}">` : `<div class="ph">${initials(b.title)}</div>`}</div>
+    <p class="qr-kicker">${esc([byLine(b), b.year || ''].filter(Boolean).join(' · '))}</p>
+    <h2>${esc(b.title)}</h2>
+    ${meta ? `<p class="qr-meta">${esc(meta)}</p>` : ''}
+    <div class="qr-meter"></div>
+    <p class="qr-hint">${!qr.tipShown ? 'Tap a bar if you’ve read it, or slide across them. The next book comes up by itself.' : (matchMedia('(pointer: fine)').matches ? 'Keyboard: 1 to 9, and 0 for a 10. Esc to close.' : '')}</p>
+  </article>`;
+  const m = meter(store.books[b.id] && store.books[b.id].rating, (v, src) => {
+    setRating(b, v);
+    if (v) qr.rated.add(b.id); else qr.rated.delete(b.id);
+    const d2 = list.filter(x => isRated(x.id)).length;
+    $('.qr-prog span', root).style.width = (d2 / total * 100) + '%';
+    $('.qr-count', root).textContent = `${d2} of ${total} scored`;
+    nextBtn.textContent = v ? 'Next' : 'Haven’t read it';
+    clearTimeout(qr.timer);
+    if (v && (src === 'pointer' || src === 'digit')) {
+      qr.timer = setTimeout(() => {
+        if (!qr) return;
+        // Move on to the next book you haven't scored yet.
+        let n = -1;
+        for (let k = qr.i + 1; k < total; k++) if (!isRated(list[k].id)) { n = k; break; }
+        qrGo(n < 0 ? total : n, 1);
+      }, 480);
+    }
+  }, { size: 'lg', label: `Your score for ${b.title}` });
+  qr.meter = m;
+  qr.tipShown = true;
+  $('.qr-meter', stage).append(m);
+  $('.bars', m).focus({ preventScroll: true });
+  // Fetch the next cover early so it's ready when you get there.
+  const nx = list[qr.i + 1];
+  if (nx && nx.cover) { const im = new Image(); im.src = coverUrl(nx.cover, 'L'); }
+}
+function qrFinish() {
+  const { list, root } = qr;
+  const session = [...qr.rated].map(id => store.books[id]).filter(Boolean);
+  const all = list.filter(b => isRated(b.id));
+  $('.qr-count', root).textContent = `${all.length} of ${list.length} scored`;
+  $('[data-qr="next"]', root).style.display = 'none';
+  $('.qr-stage', root).innerHTML = `<article class="qr-card qr-end in-next">
+    <svg class="qr-burst" viewBox="0 0 32 32" width="56" height="56" aria-hidden="true"><path d="${BURST_D}" fill="currentColor"/></svg>
+    <h2>${all.length === list.length ? 'Every book scored' : 'That’s the last one'}</h2>
+    <p class="qr-sum">${session.length ? `You scored ${plural(session.length, 'book')} just now, averaging <strong>${one(avgOf(session.map(r => r.rating)))}</strong>.` : 'You didn’t score anything this time.'}
+      ${all.length ? ` Across this list you’ve scored ${all.length} of ${list.length}, averaging <strong>${one(avgOf(all.map(b => store.books[b.id].rating)))}</strong>.` : ''}</p>
+    <div class="qr-end-acts"><button type="button" class="btn primary" data-qr="done">Done</button>${all.length < list.length ? `<button type="button" class="btn" data-qr="again">Go to an unscored one</button>` : ''}</div>
+  </article>`;
+  $('[data-qr="done"]', root).onclick = () => closeQuickRate();
+  const again = $('[data-qr="again"]', root);
+  if (again) again.onclick = () => { const k = list.findIndex(b => !isRated(b.id)); qrGo(Math.max(0, k), 1); };
+  $('[data-qr="done"]', root).focus({ preventScroll: true });
+}
+function closeQuickRate(fromHistory) {
+  if (!qr) return;
+  const q = qr; qr = null;
+  clearTimeout(q.timer);
+  q.root.remove();
+  document.body.classList.remove('qr-open');
+  if (q.pushed && !fromHistory && history.state && history.state.qr) history.back();
+  // Show the scores you just gave on the page underneath.
+  if (app.dataset.view === 'author' && authorPage) drawAuthor();
+  else refreshScoreTags();
+  window.scrollTo(0, q.scrollY);
+}
+window.addEventListener('popstate', () => { if (qr) closeQuickRate(true); });
+
+/* ---------- Your shelf by score: every rated book as a small cover, grouped by score ---------- */
+function shelfMapHTML(rows, hrefOf) {
+  const by = {};
+  rows.forEach(r => { if (r.rating) (by[r.rating] = by[r.rating] || []).push(r); });
+  return [10, 9, 8, 7, 6, 5, 4, 3, 2, 1].filter(s => by[s]).map(s => {
+    const h = heat(s);
+    return `<div class="gm-row"><b>${s}</b><div class="gm-cells">${by[s].map(r => {
+      const tip = `${r.title}${r.author ? ' by ' + r.author : ''}: scored ${s}`;
+      return `<a class="gm-book" href="${hrefOf(r)}" style="--c:${h.c}" title="${esc(tip)}" aria-label="${esc(tip)}">${r.cover ? `<img src="${esc(coverUrl(r.cover, 'S'))}" alt="" loading="lazy">` : `<span>${initials(r.title)}</span>`}</a>`;
+    }).join('')}</div></div>`;
+  }).join('');
+}
+
+/* ---------- Your ratings ---------- */
+function renderMine() {
+  ++renderId; current = null; authorPage = null; setNav('mine'); setTitle('Your ratings');
+  const list = Object.values(store.books).filter(r => r.rating);
+  const pages = list.reduce((a, r) => a + (r.pages || 0), 0);
+  const recap = !list.length ? 'Nothing scored yet. Open a book and tap the bars to give it a score.'
+    : `You’ve scored <strong>${plural(list.length, 'book')}</strong>, and your average score is <strong>${one(avgOf(list.map(r => r.rating)))}</strong>.`
+      + (pages >= 100 ? ` That’s about <strong>${pages.toLocaleString('en')} pages</strong> of reading.` : '');
+  app.innerHTML = `
+  <section class="wrap page">
+    <div class="page-head"><h1>Your ratings</h1>
+      <div class="tools">
+        ${list.length ? `<label class="sr" for="sort">Sort by</label><select class="btn" id="sort"><option value="recent">Recently scored</option><option value="top">Highest score</option><option value="name">Title</option><option value="author">Author</option></select>` : ''}
+      </div></div>
+    <p class="recap">${recap}</p>
+    ${user ? `<p class="sync-note"><span><span class="dot"></span>Saved to your account, ${esc(user.email)}</span></p>`
+      : fb && authReady ? `<p class="sync-note"><span>Sign in to keep these in your account and see them on any device.</span><button type="button" class="btn google" data-signin>${GOOGLE_G}Sign in with Google</button></p>` : ''}
+    <section class="level-card" aria-label="Your level">${levelCardHTML(list.length, justLeveled())}</section>
+    ${user ? `<section class="profile-card" id="profile-card" aria-label="Your profile"></section>` : ''}
+    ${list.length ? `<section class="shelf-sec"><h2 class="sub-h">Your shelf by score</h2><div class="gridmap"><div id="shelfmap">${shelfMapHTML(list, r => '#/book/' + r.id)}</div></div></section>` : ''}
+    <ul class="mine" id="mine"></ul>
+    ${list.length ? '' : '<a class="btn primary" href="#/">Browse books</a>'}
+  </section>`;
+  if ($('#profile-card')) renderProfileCard();
+  const draw = () => {
+    const sort = $('#sort') ? $('#sort').value : 'recent';
+    const rows = list.slice().sort((a, b) =>
+      sort === 'name' ? (a.title || '').localeCompare(b.title || '') :
+      sort === 'author' ? (a.author || 'zzzz').localeCompare(b.author || 'zzzz') || (a.title || '').localeCompare(b.title || '') :
+      sort === 'top' ? b.rating - a.rating || b.updated - a.updated :
+      b.updated - a.updated);
+    const box = $('#mine');
+    box.innerHTML = rows.map(r => `<li data-id="${esc(r.id)}">
+        <a href="#/book/${esc(r.id)}" class="poster" tabindex="-1">${coverImg(r, 'S')}</a>
+        <div><h3><a href="#/book/${esc(r.id)}">${esc(r.title)}</a></h3>
+          <p class="sub">${esc([r.author, r.year || ''].filter(Boolean).join(', '))}</p>
+          <div class="row"><span class="slot"></span>${r.pages ? `<span>${plural(r.pages, 'page')}</span>` : ''}</div></div>
+        <div class="acts"><a class="btn" href="#/book/${esc(r.id)}">Open</a><button class="btn quiet" type="button" data-remove>Remove</button></div></li>`).join('');
+    rows.forEach(r => $(`li[data-id="${r.id}"] .slot`, box).append(meter(r.rating, null, { size: 'sm' })));
+  };
+  if ($('#sort')) $('#sort').onchange = draw;
+  $('#mine').onclick = e => {
+    const b = e.target.closest('[data-remove]'); if (!b) return;
+    const id = b.closest('li').dataset.id;
+    if (confirm(`Remove your score for ${store.books[id].title}?`)) { delete store.books[id]; save([id]); renderMine(); toast('Score removed'); }
+  };
+  draw();
+}
+
+/* ---------- Profiles, people search and sharing ----------
+   Firestore layout:
+     usernames/{username}     -> { uid }                 one doc per taken username
+     profiles/{uid}           -> { username, name, photo, public, stats, updated }
+     users/{uid}/books/{id}   -> ratings (readable by others only when the profile is public)
+*/
+
+const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
+const cleanName = q => String(q || '').trim().toLowerCase().replace(/^@/, '').replace(/[^a-z0-9_]/g, '');
+const profileHref = (name, rest = '') => esc(onHttp ? profilePath(name, rest) : `#/u/${name}${rest}`);
+const firstName = pr => (pr.name || pr.username || '').split(/\s+/)[0];
+function avatarHTML(pr, size = '') {
+  const letter = esc(((pr.name || pr.username || '?').trim()[0] || '?').toUpperCase());
+  return `<span class="av ${size}">${pr.photo ? `<img src="${esc(pr.photo)}" alt="" referrerpolicy="no-referrer" loading="lazy">` : letter}</span>`;
+}
+
+
+function computeStats() {
+  const list = Object.values(store.books).filter(r => r.rating);
+  return { books: list.length, avg: list.length ? Math.round(avgOf(list.map(r => r.rating)) * 10) / 10 : 0, pages: list.reduce((a, r) => a + (r.pages || 0), 0) };
+}
+function statsLine(st) {
+  if (!st || !st.books) return 'No scores yet';
+  return `${plural(st.books, 'book')} rated`;
+}
+
+async function share(url, title) {
+  if (navigator.share && matchMedia('(pointer: coarse)').matches) {
+    try { await navigator.share({ title, url }); return; } catch (e) { if (e.name === 'AbortError') return; }
+  }
+  copyLink(url);
+}
+async function copyLink(url) {
+  try { await navigator.clipboard.writeText(url); toast('Link copied'); }
+  catch (e) { window.prompt('Copy this link', url); }
+}
+
+async function loadMyProfile() {
+  const uid = user && user.uid;
+  if (!uid || !fb) return;
+  const { doc, getDoc, setDoc } = fb.fs;
+  try {
+    const snap = await getDoc(doc(fb.db, 'profiles', uid));
+    if (!user || user.uid !== uid) return;
+    myProfile = snap.exists() ? snap.data() : null;
+    writeJSON('tenpages.me.' + uid, myProfile);
+    if (myProfile && user.photo && myProfile.photo !== user.photo) {
+      myProfile.photo = user.photo;
+      setDoc(doc(fb.db, 'profiles', uid), { photo: user.photo }, { merge: true }).catch(() => {});
+    }
+  } catch (e) { console.error(e); myProfile = null; }
+  renderAccount();
+  const v = app.dataset.view;
+  if (v === 'mine' && $('#profile-card')) renderProfileCard();
+  else if (v === 'people' && $('#me-hint')) renderMeHint();
+}
+
+async function saveProfile({ username, name, isPublic }) {
+  const { doc, runTransaction } = fb.fs;
+  const uid = user.uid, prev = myProfile && myProfile.username;
+  const data = { username, name, photo: user.photo || '', public: isPublic, stats: computeStats(), updated: Date.now() };
+  await runTransaction(fb.db, async tx => {
+    const ref = doc(fb.db, 'usernames', username);
+    const snap = await tx.get(ref);
+    if (snap.exists() && snap.data().uid !== uid) throw Object.assign(new Error('taken'), { code: 'taken' });
+    if (!snap.exists()) tx.set(ref, { uid });
+    if (prev && prev !== username) tx.delete(doc(fb.db, 'usernames', prev));
+    tx.set(doc(fb.db, 'profiles', uid), data);
+  });
+  myProfile = data;
+  writeJSON('tenpages.me.' + uid, data);
+}
+
+/* Find public profiles whose username starts with q. */
+async function searchPeople(q, n = 10) {
+  const s = cleanName(q);
+  if (!s || !fb) return [];
+  const { collection, query, where, documentId, limit, getDocs, getDoc, doc } = fb.fs;
+  const snap = await getDocs(query(collection(fb.db, 'usernames'), where(documentId(), '>=', s), where(documentId(), '<=', s + ''), limit(n * 2)));
+  const found = await Promise.all(snap.docs.map(async d => {
+    try {
+      const p = await getDoc(doc(fb.db, 'profiles', d.data().uid));
+      return p.exists() && p.data().public ? { ...p.data(), uid: p.id } : null;
+    } catch (e) { return null; }
+  }));
+  return found.filter(Boolean).slice(0, n);
+}
+
+/* Look up one profile by username. Returns null (no such user), {private:true}, or the profile. */
+async function findProfile(name, withBooks, oneBook) {
+  const { doc, getDoc, collection, getDocs } = fb.fs;
+  const s = cleanName(name);
+  if (!s) return null;
+  const u = await getDoc(doc(fb.db, 'usernames', s));
+  if (!u.exists()) return null;
+  const uid = u.data().uid;
+  try {
+    // The profile and their books are fetched together, not one after the other.
+    const soft = e => { if (e.code === 'permission-denied') return null; throw e; };
+    const [p, sn, one] = await Promise.all([
+      getDoc(doc(fb.db, 'profiles', uid)),
+      withBooks ? getDocs(collection(fb.db, 'users', uid, 'books')).catch(soft) : null,
+      oneBook ? getDoc(doc(fb.db, 'users', uid, 'books', String(oneBook))).then(x => x.exists() ? x.data() : null).catch(soft) : undefined
+    ]);
+    if (!p.exists()) return null;
+    const d = p.data();
+    const own = !!(user && user.uid === uid);
+    if (!d.public && !own) return { private: true };
+    return { ...d, uid, own, rows: sn ? sn.docs.map(x => ({ ...x.data(), id: x.id })) : undefined, rec: one };
+  } catch (e) {
+    if (e.code === 'permission-denied') return { private: true };
+    throw e;
+  }
+}
+
+function renderProfileCard() {
+  const box = $('#profile-card'); if (!box) return;
+  if (myProfile === undefined) { box.innerHTML = `<p class="dim" style="margin:0">Loading your profile…</p>`; return; }
+  if (!myProfile) { profileForm(box, null); return; }
+  const url = profileUrl(myProfile.username);
+  box.innerHTML = `
+    <div class="who">${avatarHTML(myProfile)}<div><b>${esc(myProfile.name || myProfile.username)}</b><small>@${esc(myProfile.username)}, ${myProfile.public ? 'anyone with the link can see your ratings' : 'private, only you can see your ratings'}</small></div>
+      <button type="button" class="btn quiet" id="edit-profile">Edit</button></div>
+    ${myProfile.public ? `<div class="linkrow"><label class="sr" for="my-link">Your profile link</label><input id="my-link" value="${esc(url)}" readonly><button type="button" class="btn" id="copy-my">Copy link</button><a class="btn" href="${profileHref(myProfile.username)}">View profile</a></div>` : ''}`;
+  $('#edit-profile').onclick = () => profileForm(box, myProfile);
+  const c = $('#copy-my'); if (c) c.onclick = () => copyLink(url);
+  const inp = $('#my-link'); if (inp) inp.onfocus = () => inp.select();
+}
+
+function profileForm(box, prof) {
+  const fresh = !prof;
+  box.innerHTML = `
+    <h2>${fresh ? 'Share your ratings with friends' : 'Edit your profile'}</h2>
+    ${fresh ? '<p>Pick a username. You get a profile link to send to friends, and people can find you by searching for it.</p>' : ''}
+    <form id="profile-form" novalidate>
+      <div class="field"><label for="pf-user">Username</label>
+        <div class="at"><span aria-hidden="true">@</span><input id="pf-user" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="20" value="${esc(prof ? prof.username : '')}" placeholder="madhup" required></div>
+        <small id="pf-status" aria-live="polite">3 to 20 characters: lowercase letters, numbers and underscores.</small></div>
+      <div class="field"><label for="pf-name">Display name</label><input id="pf-name" maxlength="40" value="${esc(prof ? prof.name : user.name)}"></div>
+      <label class="check"><input type="checkbox" id="pf-public" ${!prof || prof.public ? 'checked' : ''}><span>Let anyone with my link, or who searches my username, see my ratings</span></label>
+      <p class="form-err" id="pf-err" role="alert" hidden></p>
+      <div class="form-acts"><button class="btn primary" type="submit">${fresh ? 'Create profile' : 'Save changes'}</button>${fresh ? '' : '<button class="btn quiet" type="button" id="pf-cancel">Cancel</button>'}</div>
+    </form>`;
+  const u = $('#pf-user'), err = $('#pf-err'), status = $('#pf-status');
+  const RULE = '3 to 20 characters: lowercase letters, numbers and underscores.';
+  const say = (text, cls = '') => { status.textContent = text; status.className = cls; };
+  let checkT, checkSeq = 0;
+  const check = async () => {
+    const v = u.value, my = ++checkSeq;
+    if (!v) return say(RULE);
+    if (!USERNAME_RE.test(v)) return say(v.length < 3 ? 'Too short. Use at least 3 characters.' : RULE, 'bad');
+    if (prof && prof.username === v) return say('This is your current username.', 'ok');
+    say(`Checking @${v}…`);
+    try {
+      const snap = await fb.fs.getDoc(fb.fs.doc(fb.db, 'usernames', v));
+      if (my !== checkSeq) return;
+      if (snap.exists() && snap.data().uid !== user.uid) say(`@${v} is taken. Try another.`, 'bad');
+      else say(`@${v} is available.`, 'ok');
+    } catch (e) { if (my === checkSeq) say(RULE); }
+  };
+  u.oninput = () => {
+    const v = u.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
+    if (v !== u.value) u.value = v;
+    err.hidden = true;
+    clearTimeout(checkT); checkT = setTimeout(check, 350);
+  };
+  if (u.value) check();
+  const cancel = $('#pf-cancel'); if (cancel) cancel.onclick = renderProfileCard;
+  $('#profile-form').onsubmit = async e => {
+    e.preventDefault();
+    const username = u.value, name = $('#pf-name').value.trim() || user.name || username, isPublic = $('#pf-public').checked;
+    const fail = m => { err.textContent = m; err.hidden = false; };
+    if (!USERNAME_RE.test(username)) return fail('Usernames need 3 to 20 characters: lowercase letters, numbers or underscores.');
+    const btn = e.submitter || $('button[type=submit]', e.target);
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      await saveProfile({ username, name, isPublic });
+      toast(fresh ? 'Profile created' : 'Profile saved');
+      renderAccount(); renderProfileCard();
+    } catch (x) {
+      console.error(x);
+      btn.disabled = false; btn.textContent = fresh ? 'Create profile' : 'Save changes';
+      fail(x.code === 'taken' ? `@${username} is taken. Try another username.`
+        : x.code === 'permission-denied' ? 'The database rules blocked this. Update your Firestore rules to the new ones, then try again.'
+        : 'Your profile didn’t save. Check your internet connection and try again.');
+    }
+  };
+}
+
+function renderMeHint() {
+  const box = $('#me-hint'); if (!box) return;
+  box.innerHTML = !user ? `Sign in to get your own profile. <button type="button" class="btn google" data-signin style="margin-left:6px">${GOOGLE_G}Sign in with Google</button>`
+    : myProfile === null ? `You don’t have a username yet. <a href="#/mine">Pick one on Your ratings</a> so friends can find you.`
+    : myProfile ? `Your profile is <a href="${profileHref(myProfile.username)}">@${esc(myProfile.username)}</a>${myProfile.public ? '' : ' (private)'}.` : '';
+}
+
+/* People page */
+async function renderPeople(q) {
+  const id = ++renderId; current = null; setNav('people'); setTitle('People');
+  app.innerHTML = `
+  <section class="wrap page">
+    <div class="page-head"><h1>People</h1></div>
+    <p class="recap">Find friends by username and see what they’ve read and how they score it.</p>
+    <form class="people-search" id="people-form" role="search">
+      <div class="at"><span aria-hidden="true">@</span><label class="sr" for="people-q">Search by username</label><input id="people-q" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="username" value="${esc(q)}" enterkeyhint="search"></div>
+    </form>
+    <p class="hint" id="me-hint"></p>
+    <ul class="people" id="people"></ul>
+  </section>`;
+  const f = await fbReady;
+  if (id !== renderId) return;
+  if (!f) { $('#people').outerHTML = `<div class="empty" style="margin-top:20px">Accounts aren’t set up on this site yet, so there’s no one to find.</div>`; return; }
+  await authSettled;
+  if (id !== renderId) return;
+  renderMeHint();
+  const input = $('#people-q'), out = $('#people');
+  let t, seq = 0;
+  const run = async () => {
+    const term = cleanName(input.value);
+    history.replaceState(null, '', term ? `#/people/${encodeURIComponent(term)}` : '#/people'); lastRoute = location.pathname + location.hash;
+    const my = ++seq;
+    if (!term) { out.innerHTML = ''; return; }
+    out.innerHTML = `<li class="hint" style="padding:14px 4px">Searching…</li>`;
+    try {
+      const res = await searchPeople(term, 12);
+      if (my !== seq || id !== renderId) return;
+      out.innerHTML = res.length ? res.map(pp => `<li><a href="${profileHref(pp.username)}">${avatarHTML(pp)}<div><b>${esc(pp.name || pp.username)}${levelBadge(pp.stats && pp.stats.books)}</b><small>@${esc(pp.username)}${user && pp.uid === user.uid ? ' (you)' : ''}. ${esc(statsLine(pp.stats))}</small></div></a></li>`).join('')
+        : `<li class="hint" style="padding:14px 4px">No one’s username starts with “${esc(term)}”. Check the spelling, or ask your friend for their profile link.</li>`;
+    } catch (e) {
+      if (my !== seq) return;
+      console.error(e);
+      out.innerHTML = `<li class="hint" style="padding:14px 4px">Search didn’t go through. Check your internet connection.</li>`;
+    }
+  };
+  input.oninput = () => { clearTimeout(t); t = setTimeout(run, 250); };
+  $('#people-form').onsubmit = e => { e.preventDefault(); clearTimeout(t); run(); input.blur(); };
+  if (q) run(); else input.focus({ preventScroll: true });
+}
+
+function profileGate(prof, name) {
+  if (!prof) return `<div class="empty">There’s no one called @${esc(cleanName(name))} on Tenpages. Check the link, or <a href="#/people" style="color:var(--signal)">search for people</a>.</div>`;
+  if (prof.private) return `<div class="empty">@${esc(cleanName(name))} keeps their ratings private.</div>`;
+  return '';
+}
+
+/* A user's public profile */
+async function renderProfile(name) {
+  const id = ++renderId; current = null; setNav('people'); setTitle('@' + cleanName(name));
+  // A profile you've opened before appears at once from this device, then is refreshed.
+  const ckey = cleanName(name), cached = readJSON('tenpages.p.' + ckey);
+  const hasCache = !!(cached && cached.prof && Array.isArray(cached.rows));
+  if (hasCache) paintProfile({ ...cached.prof, own: !!(user && user.uid === cached.prof.uid) }, cached.rows);
+  else app.innerHTML = `<section class="wrap page"><div class="prof-head"><span class="av lg skel"></span><div><div class="skel skel-line" style="height:36px;width:240px"></div><div class="skel skel-line" style="width:120px"></div></div></div></section>`;
+  const f = await fbReady;
+  if (id !== renderId) return;
+  if (!f) { if (!hasCache) app.innerHTML = `<section class="wrap page"><div class="empty">Profiles aren’t set up on this site yet.</div></section>`; return; }
+  let prof, rows;
+  try {
+    prof = await findProfile(name, true);
+    // Public profiles don't need sign-in; only wait for it if this might be the viewer's own private one.
+    if ((!prof || prof.private) && !authReady) {
+      await authSettled;
+      if (id !== renderId) return;
+      prof = await findProfile(name, true);
+    }
+    if (prof && !prof.private) {
+      rows = prof.rows;
+      if (!rows) {
+        const { collection, getDocs } = fb.fs;
+        const snap = await getDocs(collection(fb.db, 'users', prof.uid, 'books'));
+        rows = snap.docs.map(d => ({ ...d.data(), id: d.id }));
+      }
+    }
+  } catch (e) {
+    if (id !== renderId) return;
+    console.error(e);
+    if (hasCache) return; // keep showing the saved copy
+    app.innerHTML = `<section class="wrap page"><div id="err"></div></section>`;
+    failBox($('#err'), 'This profile didn’t load. Check your internet connection.', () => renderProfile(name));
+    return;
+  }
+  if (id !== renderId) return;
+  const gate = profileGate(prof, name);
+  if (gate) { try { localStorage.removeItem('tenpages.p.' + ckey); } catch (e) {} app.innerHTML = `<section class="wrap page">${gate}</section>`; return; }
+  const { own: _own, rows: _rows, ...plain } = prof;
+  cacheProfile(ckey, { prof: plain, rows });
+  if (hasCache && JSON.stringify([cached.prof, cached.rows]) === JSON.stringify([plain, rows])) return; // nothing changed
+  paintProfile(prof, rows);
+}
+
+
+function paintProfile(prof, rows) {
+  setTitle(`${prof.name || prof.username} (@${prof.username})`);
+  rows = rows.filter(r => r && r.rating);
+  const who = firstName(prof);
+  const recap = !rows.length ? `${esc(who)} hasn’t scored anything yet.`
+    : `${esc(who)} has scored <strong>${plural(rows.length, 'book')}</strong>, with an average score of <strong>${one(avgOf(rows.map(r => r.rating)))}</strong>.`;
+  const href = r => profileHref(prof.username, `/book/${r.id}`);
+  app.innerHTML = `
+  <section class="wrap page">
+    <div class="prof-head">${avatarHTML(prof, 'lg')}<div><h1>${esc(prof.name || prof.username)}</h1><p class="handle">@${esc(prof.username)}</p>${levelBadge(rows.length)}</div>
+      <div class="tools">${rows.length ? `<label class="sr" for="psort">Sort by</label><select class="btn" id="psort"><option value="recent">Recently scored</option><option value="top">Highest score</option><option value="name">Title</option></select>` : ''}
+        <button type="button" class="btn" id="share-prof">Share profile</button>${prof.own ? '<a class="btn" href="#/mine">Edit profile</a>' : ''}</div></div>
+    <p class="recap" style="margin-top:20px">${recap}${prof.own && !prof.public ? ' Your profile is private, so only you can see this page.' : ''}</p>
+    ${rows.length ? `<section class="shelf-sec"><h2 class="sub-h">${esc(who)}’s shelf by score</h2><div class="gridmap"><div id="shelfmap">${shelfMapHTML(rows, href)}</div></div></section>` : ''}
+    <ul class="mine" id="their-list"></ul>
+  </section>`;
+  $('#share-prof').onclick = () => share(profileUrl(prof.username), `${prof.name || prof.username} on Tenpages`);
+  const draw = () => {
+    const sort = $('#psort') ? $('#psort').value : 'recent';
+    const sorted = rows.slice().sort((a, b) => sort === 'name' ? (a.title || '').localeCompare(b.title || '')
+      : sort === 'top' ? b.rating - a.rating || (b.updated || 0) - (a.updated || 0) : (b.updated || 0) - (a.updated || 0));
+    const box = $('#their-list');
+    box.innerHTML = sorted.map(r => {
+      const mine = !prof.own && store.books[r.id], h = href(r);
+      return `<li data-id="${esc(r.id)}">
+        <a href="${h}" class="poster" tabindex="-1">${coverImg(r, 'S')}</a>
+        <div><h3><a href="${h}">${esc(r.title)}</a></h3>
+          <p class="sub">${esc([r.author, r.year || ''].filter(Boolean).join(', '))}</p>
+          <div class="row"><span class="slot"></span>${mine && mine.rating ? `<span class="you">You gave it ${mine.rating}</span>` : ''}</div></div>
+        <div class="acts"><a class="btn" href="${h}">See score</a></div></li>`;
+    }).join('');
+    sorted.forEach(r => $(`li[data-id="${r.id}"] .slot`, box).append(meter(r.rating, null, { size: 'sm' })));
+  };
+  if ($('#psort')) $('#psort').onchange = draw;
+  draw();
+}
+
+/* One user's score for one book, next to yours. Everything needed is saved with their rating, so this is instant. */
+async function renderTheirBook(name, bookId) {
+  const id = ++renderId; current = null; authorPage = null; setNav('people');
+  app.innerHTML = `<div class="wrap page"><div class="show-head"><div class="show-poster skel"></div><div class="show-title"><div class="skel skel-line" style="height:48px;width:60%"></div><div class="skel skel-line" style="width:35%"></div></div></div></div>`;
+  const f = await fbReady;
+  if (id !== renderId) return;
+  if (!f) { app.innerHTML = `<section class="wrap page"><div class="empty">Profiles aren’t set up on this site yet.</div></section>`; return; }
+  let prof, rec;
+  try {
+    const lookup = () => findProfile(name, false, bookId);
+    prof = await lookup();
+    if ((!prof || prof.private) && !authReady) {
+      await authSettled;
+      if (id !== renderId) return;
+      prof = await lookup();
+    }
+    if (prof && !prof.private) rec = prof.rec || null;
+  } catch (e) {
+    if (id !== renderId) return;
+    console.error(e);
+    app.innerHTML = `<section class="wrap page"><div id="err"></div></section>`;
+    failBox($('#err'), 'This score didn’t load. Check your internet connection.', () => renderTheirBook(name, bookId));
+    return;
+  }
+  if (id !== renderId) return;
+  const gate = profileGate(prof, name);
+  if (gate) { app.innerHTML = `<section class="wrap page">${gate}</section>`; return; }
+  const who = prof.name || prof.username, first = firstName(prof);
+  const b = rec && rec.title ? recToBook({ ...rec, id: bookId }) : (seen.get(bookId) || null);
+  if (!b) {
+    app.innerHTML = `<section class="wrap page"><a class="back" href="${profileHref(prof.username)}">All of ${esc(first)}’s ratings</a><div class="empty">${esc(first)} hasn’t scored this book. <br><a class="btn" href="#/book/${esc(bookId)}">Open the book</a></div></section>`;
+    return;
+  }
+  setTitle(`${b.title}: ${who}'s score`);
+  const mineRec = !prof.own && store.books[bookId];
+  const shareUrl = profileUrl(prof.username, `/book/${bookId}`);
+  let compare = '';
+  if (mineRec && mineRec.rating) {
+    const diff = (rec && rec.rating ? rec.rating : 0) - mineRec.rating;
+    compare = `<p>You gave it <strong>${mineRec.rating}/10</strong>.`
+      + (rec && rec.rating ? ` ${esc(first)} scored it ${diff === 0 ? 'the same as you' : `${Math.abs(diff)} ${diff > 0 ? 'higher' : 'lower'} than you`}.` : '') + '</p>';
+  }
+  app.innerHTML = `
+  <div class="wrap page">
+    <a class="back" href="${profileHref(prof.username)}">All of ${esc(first)}’s ratings</a>
+    <section class="show-head">
+      <div class="show-poster">${b.cover ? `<img src="${esc(coverUrl(b.cover, 'L'))}" alt="Cover of ${esc(b.title)}">` : `<div class="ph">${initials(b.title)}</div>`}</div>
+      <div class="show-title"><h1>${esc(b.title)}</h1>
+        <div class="show-sub">${b.authors.length ? `<span>by ${esc(b.authors.join(', '))}</span>` : ''}${b.year ? `<span>${b.year}</span>` : ''}<span>Scored by ${esc(who)}</span><span>@${esc(prof.username)}</span></div></div>
+      <div class="show-body">
+        <div class="my-score"><h2>${esc(first)}’s score</h2><div id="their-meter"></div>
+          ${rec && rec.rating ? '' : `<p>${esc(first)} hasn’t scored this book.</p>`}${compare}
+          <div class="share-row"><a class="btn primary" href="#/book/${esc(bookId)}">${prof.own ? 'Edit your score' : mineRec && mineRec.rating ? 'Open your score' : 'Score it yourself'}</a><button type="button" class="btn" id="share-their">Share</button></div></div>
+      </div>
+    </section>
+  </div>`;
+  $('#their-meter').append(meter(rec && rec.rating, null, { size: 'lg' }));
+  $('#share-their').onclick = () => share(shareUrl, `${who}'s score for ${b.title}`);
+}
+
+window.addEventListener('storage', e => { if (e.key === localKey() && !user) { store = load(); if (app.dataset.view === 'mine') renderMine(); else refreshScoreTags(); } });
+
+/* ---------- Installable app ---------- */
+const BURST_SVG = `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="${BURST_D}" fill="currentColor"/></svg>`;
+let installEvt = null;
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+function refreshInstall() {
+  const can = !isStandalone() && !!(installEvt || isIOS());
+  $$('[data-install]').forEach(b => { b.hidden = !can; });
+  const row = $('#install-row'); if (row) row.hidden = !can;
+  let dismissed = false; try { dismissed = !!localStorage.getItem('tenpages.installHint'); } catch (e) {}
+  $$('[data-install-hint]').forEach(h => { h.hidden = !can || dismissed || !matchMedia('(max-width: 1024px)').matches; });
+}
+async function doInstall() {
+  setMenu(false);
+  if (installEvt) {
+    const e = installEvt; installEvt = null;
+    e.prompt();
+    try { await e.userChoice; } catch (x) {}
+    refreshInstall();
+    return;
+  }
+  // iPhone and iPad have no install prompt, so show the two taps it takes.
+  const s = document.createElement('div');
+  s.className = 'sheet';
+  s.innerHTML = `<div class="sheet-box" role="dialog" aria-modal="true" aria-labelledby="sheet-h">
+    <h2 id="sheet-h">Add Tenpages to your home screen</h2>
+    <ol><li>Tap the Share button <svg class="ios-share" viewBox="0 0 24 24" aria-label="Share"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M5 11v9h14v-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> in Safari’s toolbar.</li>
+      <li>Scroll down and tap <b>Add to Home Screen</b>, then <b>Add</b>.</li></ol>
+    <button type="button" class="btn primary">Got it</button></div>`;
+  const close = () => s.remove();
+  s.onclick = e => { if (e.target === s || e.target.closest('.btn')) close(); };
+  s.onkeydown = e => { if (e.key === 'Escape') close(); };
+  document.body.append(s);
+  $('.btn', s).focus();
+}
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; refreshInstall(); });
+addEventListener('appinstalled', () => { installEvt = null; refreshInstall(); toast('Tenpages is on your home screen now'); });
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-install]')) { e.preventDefault(); doInstall(); }
+  else if (e.target.closest('[data-install-dismiss]')) { try { localStorage.setItem('tenpages.installHint', '1'); } catch (x) {} refreshInstall(); }
+});
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(location.hostname))) {
+  addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+}
+
+
+/* Begin downloading a book as soon as a cursor rests on it or a finger touches it. */
+let warmT;
+const warm = e => {
+  const a = e.target.closest && e.target.closest('a[href^="#/book/"]');
+  if (!a) return;
+  const m = /^#\/book\/(OL\d+W)/i.exec(a.getAttribute('href'));
+  if (m) api(`/works/${m[1].toUpperCase()}.json`).catch(() => {}); // just the one request, to stay gentle on Open Library
+};
+document.addEventListener('pointerover', e => { if (e.pointerType === 'touch') return; clearTimeout(warmT); warmT = setTimeout(() => warm(e), 250); }, { passive: true });
+document.addEventListener('pointerout', () => clearTimeout(warmT), { passive: true });
+document.addEventListener('touchstart', warm, { passive: true });
+
+route();
+refreshInstall();
+initAccounts();
+})();
+</script>
+</body>
+</html>
