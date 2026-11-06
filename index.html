@@ -1277,7 +1277,7 @@ qIn.addEventListener('input', () => {
       ]);
       if (qIn.value.trim() !== q) return;
       if (!r.length && !people.length) { closeSug(); return; }
-      sug.innerHTML = r.slice(0, people.length ? 5 : 6).map(b => `<a href="#/book/${b.id}">${b.cover ? `<img src="${esc(coverUrl(b.cover, 'S'))}" alt="">` : `<div class="ph"></div>`}<div><b>${esc(b.title)}</b><small>${esc([(b.authors || [])[0], b.year || ''].filter(Boolean).join(', '))}</small></div></a>`).join('')
+      sug.innerHTML = r.slice(0, people.length ? 5 : 6).map(b => `<a href="#/book/${b.id}">${b.cover ? `<img src="${esc(coverUrl(b.cover, 'M'))}" alt="">` : `<div class="ph"></div>`}<div><b>${esc(b.title)}</b><small>${esc([(b.authors || [])[0], b.year || ''].filter(Boolean).join(', '))}</small></div></a>`).join('')
         + (people.length ? `<div class="group">People</div>` + people.map(pp => `<a class="person" href="${profileHref(pp.username)}">${avatarHTML(pp, 'sm')}<div><b>${esc(pp.name || pp.username)}</b><small>@${esc(pp.username)}</small></div></a>`).join('') : '')
         + `<a class="all" href="#/search/${encodeURIComponent(q)}">Show all book results for “${esc(q)}”</a>`;
       sug.classList.add('open'); sugIdx = -1;
@@ -1466,7 +1466,7 @@ function drawAuthor() {
   if (box) {
     const rows = sortedAuthorBooks();
     box.innerHTML = rows.map(b => `<li data-id="${b.id}">
-      <a href="#/book/${b.id}" class="poster" tabindex="-1">${coverImg(b, 'S')}</a>
+      <a href="#/book/${b.id}" class="poster" tabindex="-1">${coverImg(b, 'M')}</a>
       <div><h3><a href="#/book/${b.id}">${esc(b.title)}</a></h3>
         <p class="sub">${esc([b.year || '', b.pages ? plural(b.pages, 'page') : ''].filter(Boolean).join(', '))}</p>
         <div class="slot"></div></div></li>`).join('');
@@ -1705,7 +1705,7 @@ function shelfMapHTML(rows, hrefOf) {
     const h = heat(s);
     return `<div class="gm-row"><b>${s}</b><div class="gm-cells">${by[s].map(r => {
       const tip = `${r.title}${r.author ? ' by ' + r.author : ''}: scored ${s}`;
-      return `<a class="gm-book" href="${hrefOf(r)}" style="--c:${h.c}" title="${esc(tip)}" aria-label="${esc(tip)}">${r.cover ? `<img src="${esc(coverUrl(r.cover, 'S'))}" alt="" loading="lazy">` : `<span>${initials(r.title)}</span>`}</a>`;
+      return `<a class="gm-book" href="${hrefOf(r)}" style="--c:${h.c}" title="${esc(tip)}" aria-label="${esc(tip)}">${r.cover ? `<img src="${esc(coverUrl(r.cover, 'M'))}" alt="" loading="lazy">` : `<span>${initials(r.title)}</span>`}</a>`;
     }).join('')}</div></div>`;
   }).join('');
 }
@@ -1743,7 +1743,7 @@ function renderMine() {
       b.updated - a.updated);
     const box = $('#mine');
     box.innerHTML = rows.map(r => `<li data-id="${esc(r.id)}">
-        <a href="#/book/${esc(r.id)}" class="poster" tabindex="-1">${coverImg(r, 'S')}</a>
+        <a href="#/book/${esc(r.id)}" class="poster" tabindex="-1">${coverImg(r, 'M')}</a>
         <div><h3><a href="#/book/${esc(r.id)}">${esc(r.title)}</a></h3>
           <p class="sub">${esc([r.author, r.year || ''].filter(Boolean).join(', '))}</p>
           <div class="row"><span class="slot"></span>${r.pages ? `<span>${plural(r.pages, 'page')}</span>` : ''}</div></div>
@@ -2075,7 +2075,7 @@ function paintProfile(prof, rows) {
     box.innerHTML = sorted.map(r => {
       const mine = !prof.own && store.books[r.id], h = href(r);
       return `<li data-id="${esc(r.id)}">
-        <a href="${h}" class="poster" tabindex="-1">${coverImg(r, 'S')}</a>
+        <a href="${h}" class="poster" tabindex="-1">${coverImg(r, 'M')}</a>
         <div><h3><a href="${h}">${esc(r.title)}</a></h3>
           <p class="sub">${esc([r.author, r.year || ''].filter(Boolean).join(', '))}</p>
           <div class="row"><span class="slot"></span>${mine && mine.rating ? `<span class="you">You gave it ${mine.rating}</span>` : ''}</div></div>
